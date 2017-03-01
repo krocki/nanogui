@@ -17,7 +17,7 @@
 #include <nanogui/common.h>
 #include <nanogui/object.h>
 
-NAMESPACE_BEGIN(nanogui)
+NAMESPACE_BEGIN ( nanogui )
 
 /**
  * \class Theme theme.h nanogui/theme.h
@@ -25,66 +25,67 @@ NAMESPACE_BEGIN(nanogui)
  * \brief Storage class for basic theme-related properties.
  */
 class NANOGUI_EXPORT Theme : public Object {
-public:
-    Theme(NVGcontext *ctx);
-
-    /* Fonts */
-    int mFontNormal;
-    int mFontBold;
-    int mFontIcons;
-
-    /* Spacing-related parameters */
-    int mStandardFontSize;
-    int mButtonFontSize;
-    int mTextBoxFontSize;
-    int mWindowCornerRadius;
-    int mWindowHeaderHeight;
-    int mWindowDropShadowSize;
-    int mButtonCornerRadius;
-    float mTabBorderWidth;
-    int mTabInnerMargin;
-    int mTabMinButtonWidth;
-    int mTabMaxButtonWidth;
-    int mTabControlWidth;
-    int mTabButtonHorizontalPadding;
-    int mTabButtonVerticalPadding;
-
-    /* Generic colors */
-    Color mDropShadow;
-    Color mTransparent;
-    Color mBorderDark;
-    Color mBorderLight;
-    Color mBorderMedium;
-    Color mTextColor;
-    Color mDisabledTextColor;
-    Color mTextColorShadow;
-    Color mIconColor;
-
-    /* Button colors */
-    Color mButtonGradientTopFocused;
-    Color mButtonGradientBotFocused;
-    Color mButtonGradientTopUnfocused;
-    Color mButtonGradientBotUnfocused;
-    Color mButtonGradientTopPushed;
-    Color mButtonGradientBotPushed;
-
-    /* Window colors */
-    Color mWindowFillUnfocused;
-    Color mWindowFillFocused;
-    Color mWindowTitleUnfocused;
-    Color mWindowTitleFocused;
-
-    Color mWindowHeaderGradientTop;
-    Color mWindowHeaderGradientBot;
-    Color mWindowHeaderSepTop;
-    Color mWindowHeaderSepBot;
-
-    Color mWindowPopup;
-    Color mWindowPopupTransparent;
-protected:
-    virtual ~Theme() { };
-public:
-    EIGEN_MAKE_ALIGNED_OPERATOR_NEW
+	public:
+		Theme ( NVGcontext *ctx );
+		
+		/* Fonts */
+		int mFontNormal;
+		int mFontBold;
+		int mFontIcons;
+		
+		/* Spacing-related parameters */
+		int mStandardFontSize;
+		int mButtonFontSize;
+		int mTextBoxFontSize;
+		int mConsoleFontSize;
+		int mWindowCornerRadius;
+		int mWindowHeaderHeight;
+		int mWindowDropShadowSize;
+		int mButtonCornerRadius;
+		float mTabBorderWidth;
+		int mTabInnerMargin;
+		int mTabMinButtonWidth;
+		int mTabMaxButtonWidth;
+		int mTabControlWidth;
+		int mTabButtonHorizontalPadding;
+		int mTabButtonVerticalPadding;
+		
+		/* Generic colors */
+		Color mDropShadow;
+		Color mTransparent;
+		Color mBorderDark;
+		Color mBorderLight;
+		Color mBorderMedium;
+		Color mTextColor;
+		Color mDisabledTextColor;
+		Color mTextColorShadow;
+		Color mIconColor;
+		
+		/* Button colors */
+		Color mButtonGradientTopFocused;
+		Color mButtonGradientBotFocused;
+		Color mButtonGradientTopUnfocused;
+		Color mButtonGradientBotUnfocused;
+		Color mButtonGradientTopPushed;
+		Color mButtonGradientBotPushed;
+		
+		/* Window colors */
+		Color mWindowFillUnfocused;
+		Color mWindowFillFocused;
+		Color mWindowTitleUnfocused;
+		Color mWindowTitleFocused;
+		
+		Color mWindowHeaderGradientTop;
+		Color mWindowHeaderGradientBot;
+		Color mWindowHeaderSepTop;
+		Color mWindowHeaderSepBot;
+		
+		Color mWindowPopup;
+		Color mWindowPopupTransparent;
+	protected:
+		virtual ~Theme() { };
+	public:
+		EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 };
 
-NAMESPACE_END(nanogui)
+NAMESPACE_END ( nanogui )
