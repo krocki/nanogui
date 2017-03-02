@@ -25,7 +25,7 @@ Graph::Graph ( Widget *parent, const std::string &caption )
 	// mTextColor = mGraphColor;
 	// mForegroundColor = mGraphColor;
 	mFill = false;
-	mBezier = true;
+	mBezier = false;
 }
 
 Vector2i Graph::preferredSize ( NVGcontext * ) const {
@@ -92,7 +92,10 @@ void Graph::draw ( NVGcontext *ctx ) {
 	
 	if ( !mFill ) {
 	
-		nvgStrokeColor ( ctx, mGraphColor );
+		NVGpaint line_grad = nvgLinearGradient ( ctx, mPos.x(), mPos.y(), mPos.x() + mSize.x(), mPos.y(),
+							 nvgRGBA ( mForegroundColor.r(), mForegroundColor.g(), mForegroundColor.b(), 0 ), mGraphColor );
+							 
+		nvgStrokePaint ( ctx, line_grad );
 		nvgStrokeWidth ( ctx, 1.0f );
 		nvgStroke ( ctx );
 	}
@@ -131,9 +134,9 @@ void Graph::draw ( NVGcontext *ctx ) {
 	
 	if ( !mHeader.empty() ) {
 		nvgFontSize ( ctx, 12.0f );
-		nvgTextAlign ( ctx, NVG_ALIGN_RIGHT | NVG_ALIGN_TOP );
+		nvgTextAlign ( ctx, NVG_ALIGN_LEFT | NVG_ALIGN_TOP );
 		nvgFillColor ( ctx, mTextColor );
-		nvgText ( ctx, mPos.x() + mSize.x() - 3, mPos.y() + 2, mHeader.c_str(), NULL );
+		nvgText ( ctx, mPos.x() + 3, mPos.y() + 2, mHeader.c_str(), NULL );
 	}
 	
 	/* kmrocki */
@@ -153,7 +156,7 @@ void Graph::draw ( NVGcontext *ctx ) {
 	
 	nvgBeginPath ( ctx );
 	nvgRect ( ctx, mPos.x(), mPos.y(), mSize.x(), mSize.y() );
-	nvgStrokeColor ( ctx, Color ( 100, 255 ) );
+	nvgStrokeColor ( ctx, Color ( 100, 255, 0, 32 ) );
 	nvgStroke ( ctx );
 }
 
