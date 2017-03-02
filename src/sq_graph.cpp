@@ -2,7 +2,7 @@
 * @Author: Kamil Rocki
 * @Date:   2017-03-01 18:31:12
 * @Last Modified by:   kmrocki@us.ibm.com
-* @Last Modified time: 2017-03-01 20:46:27
+* @Last Modified time: 2017-03-01 20:51:44
 */
 
 #include <nanogui/sq_graph.h>
@@ -69,9 +69,9 @@ void SQGraph::draw ( NVGcontext *ctx ) {
 	// nvgStroke ( ctx );
 
 	// squares
-	int num_squares = 10;
-	float margin_left = 25;
-	float margin_right = 25;
+	int num_squares = 5;
+	float margin_left = 23;
+	float margin_right = 28;
 	float margin_top = 5;
 	float margin_bottom = 4;
 	float spacing = 3;
