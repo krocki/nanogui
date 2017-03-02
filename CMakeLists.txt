@@ -323,6 +323,7 @@ add_library(nanogui-obj OBJECT
   include/nanogui/colorwheel.h src/colorwheel.cpp
   include/nanogui/colorpicker.h src/colorpicker.cpp
   include/nanogui/graph.h src/graph.cpp
+  include/nanogui/sq_graph.h src/sq_graph.cpp
   include/nanogui/stackedwidget.h src/stackedwidget.cpp
   include/nanogui/tabheader.h src/tabheader.cpp
   include/nanogui/tabwidget.h src/tabwidget.cpp

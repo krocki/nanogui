@@ -43,6 +43,16 @@ void Graph::draw ( NVGcontext *ctx ) {
 	if ( mValues.size() < 2 )
 		return;
 		
+	float scale = 1.0f;
+	float offset = 0.0f;
+	
+	//auto-scale
+	float data_max = mValues.maxCoeff();
+	float data_min = mValues.minCoeff();
+	
+	offset = data_min;
+	scale = 1.0f / ( ( data_max - data_min ) * ( 1.6f ) );
+	
 	nvgBeginPath ( ctx );
 	nvgMoveTo ( ctx, mPos.x(), mPos.y() + mSize.y() );
 	
@@ -57,7 +67,7 @@ void Graph::draw ( NVGcontext *ctx ) {
 		
 		for ( i = 0; i < mValues.size(); i++ ) {
 			sx[i] = mPos.x() + i * dx;
-			sy[i] = mPos.y() + mSize.y() * ( 1. - mValues[i] );
+			sy[i] = mPos.y() + mSize.y() * ( 1. - ( mValues[i] - offset ) * scale );
 		}
 		
 		nvgLineTo ( ctx, mPos.x(), sy[0] );
@@ -72,7 +82,7 @@ void Graph::draw ( NVGcontext *ctx ) {
 	else {
 	
 		for ( size_t i = 0; i < ( size_t ) mValues.size(); i++ ) {
-			float value = mValues[i];
+			float value = ( mValues[i] - offset ) * scale;
 			float vx = mPos.x() + i * mSize.x() / ( float ) ( mValues.size() - 1 );
 			float vy = mPos.y() + ( 1 - value ) * mSize.y();
 			nvgLineTo ( ctx, vx, vy );
