@@ -547,9 +547,13 @@ bool Screen::cursorPosCallbackEvent ( double x, double y ) {
 			}
 		}
 		else {
+			// https://github.com/wjakob/nanogui/pull/204/commits/8a6d0f057bdc6f1b864386831eb7723638581d5b
+			// enable drag event for screen
 			ret = mDragWidget->mouseDragEvent (
-					  p - mDragWidget->parent()->absolutePosition(), p - mMousePos,
-					  mMouseState, mModifiers );
+					  // p - mDragWidget->parent()->absolutePosition(), p - mMousePos,
+					  // mMouseState, mModifiers );
+					  ( mDragWidget->parent() != nullptr ) ? p - mDragWidget->parent()->absolutePosition() : p,
+					  p - mMousePos, mMouseState, mModifiers );
 		}
 		
 		if ( !ret )
@@ -590,8 +594,12 @@ bool Screen::mouseButtonCallbackEvent ( int button, int action, int modifiers ) 
 		if ( mDragActive && action == GLFW_RELEASE &&
 				dropWidget != mDragWidget )
 			mDragWidget->mouseButtonEvent (
-				mMousePos - mDragWidget->parent()->absolutePosition(), button,
-				false, mModifiers );
+				// https://github.com/wjakob/nanogui/pull/204/commits/8a6d0f057bdc6f1b864386831eb7723638581d5b
+				// enable drag event for screen
+				// mMousePos - mDragWidget->parent()->absolutePosition(), button,
+				// false, mModifiers );
+				( mDragWidget->parent() != nullptr ) ? mMousePos - mDragWidget->parent()->absolutePosition() : mMousePos,
+				button, false, mModifiers );
 				
 		if ( dropWidget != nullptr && dropWidget->cursor() != mCursor ) {
 			mCursor = dropWidget->cursor();
@@ -601,9 +609,12 @@ bool Screen::mouseButtonCallbackEvent ( int button, int action, int modifiers ) 
 		if ( action == GLFW_PRESS && ( button == GLFW_MOUSE_BUTTON_1 || button == GLFW_MOUSE_BUTTON_2 ) ) {
 			mDragWidget = findWidget ( mMousePos );
 			
-			if ( mDragWidget == this )
-				mDragWidget = nullptr;
-				
+			// https://github.com/wjakob/nanogui/pull/204/commits/8a6d0f057bdc6f1b864386831eb7723638581d5b
+			// enable drag event for screen
+			
+			// if ( mDragWidget == this )
+			// 	mDragWidget = nullptr;
+			
 			mDragActive = mDragWidget != nullptr;
 			
 			if ( !mDragActive )
