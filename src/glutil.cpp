@@ -70,12 +70,12 @@ bool GLShader::initFromFiles(
     const std::string &vertex_fname,
     const std::string &fragment_fname,
     const std::string &geometry_fname) {
-    auto file_to_string = [](const std::string &filename) -> std::string {
+    auto file_to_string = [](const std::string & filename) -> std::string {
         if (filename.empty())
             return "";
         std::ifstream t(filename);
         return std::string((std::istreambuf_iterator<char>(t)),
-                           std::istreambuf_iterator<char>());
+        std::istreambuf_iterator<char>());
     };
 
     return init(name,
@@ -206,7 +206,7 @@ void GLShader::uploadAttrib(const std::string &name, size_t size, int dim,
 }
 
 void GLShader::downloadAttrib(const std::string &name, size_t size, int /* dim */,
-                             uint32_t compSize, GLuint /* glType */, void *data) {
+                              uint32_t compSize, GLuint /* glType */, void *data) {
     auto it = mBufferObjects.find(name);
     if (it == mBufferObjects.end())
         throw std::runtime_error("downloadAttrib(" + mName + ", " + name + ") : buffer not found!");
@@ -265,8 +265,8 @@ void GLShader::drawIndexed(int type, uint32_t offset_, uint32_t count_) {
     size_t count = count_;
 
     switch (type) {
-        case GL_TRIANGLES: offset *= 3; count *= 3; break;
-        case GL_LINES: offset *= 2; count *= 2; break;
+    case GL_TRIANGLES: offset *= 3; count *= 3; break;
+    case GL_LINES: offset *= 2; count *= 2; break;
     }
 
     glDrawElements(type, (GLsizei) count, GL_UNSIGNED_INT,
@@ -281,7 +281,7 @@ void GLShader::drawArray(int type, uint32_t offset, uint32_t count) {
 }
 
 void GLShader::free() {
-    for (auto &buf: mBufferObjects)
+    for (auto &buf : mBufferObjects)
         glDeleteBuffers(1, &buf.second.id);
     mBufferObjects.clear();
 
@@ -404,7 +404,7 @@ void GLFramebuffer::downloadTGA(const std::string &filename) {
     uint32_t rowSize = mSize.x() * 4;
     uint32_t halfHeight = mSize.y() / 2;
     uint8_t *line = (uint8_t *) alloca(rowSize);
-    for (uint32_t i=0, j=mSize.y()-1; i<halfHeight; ++i) {
+    for (uint32_t i = 0, j = mSize.y() - 1; i < halfHeight; ++i) {
         memcpy(line, temp + i * rowSize, rowSize);
         memcpy(temp + i * rowSize, temp + j * rowSize, rowSize);
         memcpy(temp + j * rowSize, line, rowSize);

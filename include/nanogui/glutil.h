@@ -62,7 +62,7 @@ class NANOGUI_EXPORT GLShader {
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
     template <typename T> friend struct detail::serialization_helper;
 #endif
-public:
+  public:
     /// Create an unitialized OpenGL shader
     GLShader()
         : mVertexShader(0), mFragmentShader(0), mGeometryShader(0),
@@ -261,15 +261,15 @@ public:
         return size;
     }
 
-public:
+  public:
     /* Low-level API */
     void uploadAttrib(const std::string &name, size_t size, int dim,
-                       uint32_t compSize, GLuint glType, bool integral,
-                       const void *data, int version = -1);
+                      uint32_t compSize, GLuint glType, bool integral,
+                      const void *data, int version = -1);
     void downloadAttrib(const std::string &name, size_t size, int dim,
-                       uint32_t compSize, GLuint glType, void *data);
+                        uint32_t compSize, GLuint glType, void *data);
 
-protected:
+  protected:
     /**
      * \struct Buffer glutil.h nanogui/glutil.h
      *
@@ -302,7 +302,7 @@ protected:
  * \brief Helper class for creating OpenGL Uniform Buffer objects.
  */
 class NANOGUI_EXPORT GLUniformBuffer {
-public:
+  public:
     /// Default constructor: unusable until you call the ``init()`` method
     GLUniformBuffer() : mID(0), mBindingPoint(0) { }
 
@@ -323,7 +323,7 @@ public:
 
     /// Return the binding point of this uniform buffer
     int getBindingPoint() const { return mBindingPoint; }
-private:
+  private:
     GLuint mID;
     int mBindingPoint;
 };
@@ -337,7 +337,7 @@ private:
  *        'std140' packing format.
  */
 class UniformBufferStd140 : public std::vector<uint8_t> {
-public:
+  public:
     using Parent = std::vector<uint8_t>;
 
     using Parent::push_back;
@@ -360,7 +360,7 @@ public:
             push_back((typename Derived::Scalar) 0);
     }
 
-    template <typename Derived, typename std::enable_if<!Derived::IsVectorAtCompileTime, int>::type = 0>
+    template < typename Derived, typename std::enable_if < !Derived::IsVectorAtCompileTime, int >::type = 0 >
     void push_back(const Eigen::MatrixBase<Derived> &value, bool colMajor = true) {
         const int n = (int) (colMajor ? value.rows() : value.cols());
         const int m = (int) (colMajor ? value.cols() : value.rows());
@@ -384,7 +384,7 @@ public:
  * \brief Helper class for creating framebuffer objects.
  */
 class NANOGUI_EXPORT GLFramebuffer {
-public:
+  public:
     /// Default constructor: unusable until you call the ``init()`` method
     GLFramebuffer() : mFramebuffer(0), mDepth(0), mColor(0), mSamples(0) { }
 
@@ -411,11 +411,11 @@ public:
 
     /// Quick and dirty method to write a TGA (32bpp RGBA) file of the framebuffer contents for debugging
     void downloadTGA(const std::string &filename);
-protected:
+  protected:
     GLuint mFramebuffer, mDepth, mColor;
     Vector2i mSize;
     int mSamples;
-public:
+  public:
     EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 };
 
@@ -470,10 +470,10 @@ struct Arcball {
         float invMinDim = 1.0f / mSize.minCoeff();
         float w = (float) mSize.x(), h = (float) mSize.y();
 
-        float ox = (mSpeedFactor * (2*mLastPos.x() - w) + w) - w - 1.0f;
-        float tx = (mSpeedFactor * (2*pos.x()      - w) + w) - w - 1.0f;
-        float oy = (mSpeedFactor * (h - 2*mLastPos.y()) + h) - h - 1.0f;
-        float ty = (mSpeedFactor * (h - 2*pos.y())      + h) - h - 1.0f;
+        float ox = (mSpeedFactor * (2 * mLastPos.x() - w) + w) - w - 1.0f;
+        float tx = (mSpeedFactor * (2 * pos.x()      - w) + w) - w - 1.0f;
+        float oy = (mSpeedFactor * (h - 2 * mLastPos.y()) + h) - h - 1.0f;
+        float ty = (mSpeedFactor * (h - 2 * pos.y())      + h) - h - 1.0f;
 
         ox *= invMinDim; oy *= invMinDim;
         tx *= invMinDim; ty *= invMinDim;
@@ -485,8 +485,8 @@ struct Arcball {
             float sa = std::sqrt(axis.dot(axis)),
                   ca = v0.dot(v1),
                   angle = std::atan2(sa, ca);
-            if (tx*tx + ty*ty > 1.0f)
-                angle *= 1.0f + 0.2f * (std::sqrt(tx*tx + ty*ty) - 1.0f);
+            if (tx * tx + ty * ty > 1.0f)
+                angle *= 1.0f + 0.2f * (std::sqrt(tx * tx + ty * ty) - 1.0f);
             mIncr = Eigen::AngleAxisf(angle, axis.normalized());
             if (!std::isfinite(mIncr.norm()))
                 mIncr = Quaternionf::Identity();
@@ -496,17 +496,17 @@ struct Arcball {
 
     Matrix4f matrix() const {
         Matrix4f result2 = Matrix4f::Identity();
-        result2.block<3,3>(0, 0) = (mIncr * mQuat).toRotationMatrix();
+        result2.block<3, 3>(0, 0) = (mIncr * mQuat).toRotationMatrix();
         return result2;
     }
 
-protected:
+  protected:
     bool mActive;
     Vector2i mLastPos;
     Vector2i mSize;
     Quaternionf mQuat, mIncr;
     float mSpeedFactor;
-public:
+  public:
     EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 };
 
@@ -555,9 +555,9 @@ extern NANOGUI_EXPORT Vector3f project(const Vector3f &obj,
  *     The dimensions of the viewport to project out of.
  */
 extern NANOGUI_EXPORT Vector3f unproject(const Vector3f &win,
-                                         const Matrix4f &model,
-                                         const Matrix4f &proj,
-                                         const Vector2i &viewportSize);
+        const Matrix4f &model,
+        const Matrix4f &proj,
+        const Vector2i &viewportSize);
 
 /**
  * \brief Creates a "look at" matrix that describes the position and
