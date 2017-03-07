@@ -87,29 +87,30 @@ void ImagePanel::draw(NVGcontext* ctx) {
             iy = 0;
         }
 
-        NVGpaint imgPaint = nvgImagePattern(
-                                ctx, p.x() + ix, p.y() + iy, iw, ih, 0, mImages[i].first,
-                                mMouseIndex == (int)i ? 1.0 : 0.7);
+        NVGpaint imgPaint = nvgImagePattern( ctx, p.x() + ix, p.y() + iy, iw, ih, 0,
+                                             mImages[i].first, mMouseIndex == (int)i ? 1.0 : 0.7);
 
         nvgBeginPath(ctx);
         nvgRoundedRect(ctx, p.x(), p.y(), mThumbSize, mThumbSize, 5);
+        // nvgRect(ctx, p.x(), p.y(), mThumbSize, mThumbSize);
         nvgFillPaint(ctx, imgPaint);
         nvgFill(ctx);
 
-        NVGpaint shadowPaint =
-            nvgBoxGradient(ctx, p.x() - 1, p.y(), mThumbSize + 2, mThumbSize + 2, 5, 3,
-                           nvgRGBA(0, 0, 0, 128), nvgRGBA(0, 0, 0, 0));
-        nvgBeginPath(ctx);
-        nvgRect(ctx, p.x() - 5, p.y() - 5, mThumbSize + 10, mThumbSize + 10);
-        nvgRoundedRect(ctx, p.x(), p.y(), mThumbSize, mThumbSize, 6);
-        nvgPathWinding(ctx, NVG_HOLE);
-        nvgFillPaint(ctx, shadowPaint);
-        nvgFill(ctx);
+        // NVGpaint shadowPaint =
+        //     nvgBoxGradient(ctx, p.x() - 1, p.y(), mThumbSize + 2, mThumbSize + 2, 5, 3,
+        //                    nvgRGBA(0, 0, 0, 128), nvgRGBA(0, 0, 0, 0));
+        // nvgBeginPath(ctx);
+        // nvgRect(ctx, p.x() - 5, p.y() - 5, mThumbSize + 10, mThumbSize + 10);
+        // nvgRoundedRect(ctx, p.x(), p.y(), mThumbSize, mThumbSize, 6);
+        // nvgPathWinding(ctx, NVG_HOLE);
+        // nvgFillPaint(ctx, shadowPaint);
+        // nvgFill(ctx);
 
         nvgBeginPath(ctx);
         nvgRoundedRect(ctx, p.x() + 0.5f, p.y() + 0.5f, mThumbSize - 1, mThumbSize - 1, 4 - 0.5f);
+        //nvgRect(ctx, p.x() + 0.5f, p.y() + 0.5f, mThumbSize - 1, mThumbSize - 1);
         nvgStrokeWidth(ctx, 1.0f);
-        nvgStrokeColor(ctx, nvgRGBA(255, 255, 255, 80));
+        nvgStrokeColor(ctx, nvgRGBA(255, 255, 255, 20));
         nvgStroke(ctx);
     }
 }
