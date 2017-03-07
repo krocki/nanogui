@@ -34,8 +34,8 @@ Vector2i Window::preferredSize(NVGcontext *ctx) const {
     nvgTextBounds(ctx, 0, 0, mTitle.c_str(), nullptr, bounds);
 
     return result.cwiseMax(Vector2i(
-        bounds[2]-bounds[0] + 20, bounds[3]-bounds[1]
-    ));
+                               bounds[2] - bounds[0] + 20, bounds[3] - bounds[1]
+                           ));
 }
 
 Widget *Window::buttonPanel() {
@@ -70,22 +70,29 @@ void Window::draw(NVGcontext *ctx) {
     /* Draw window */
     nvgSave(ctx);
     nvgBeginPath(ctx);
+
     nvgRoundedRect(ctx, mPos.x(), mPos.y(), mSize.x(), mSize.y(), cr);
 
     nvgFillColor(ctx, mMouseFocus ? mTheme->mWindowFillFocused
-                                  : mTheme->mWindowFillUnfocused);
+                 : mTheme->mWindowFillUnfocused);
     nvgFill(ctx);
+
+    nvgRoundedRect(ctx, mPos.x(), mPos.y(), mSize.x(), mSize.y(), cr);
+
+    nvgStrokeColor(ctx, mTheme->mWindowHeaderSepTop);
+    nvgStroke(ctx);
+
 
 
     /* Draw a drop shadow */
     NVGpaint shadowPaint = nvgBoxGradient(
-        ctx, mPos.x(), mPos.y(), mSize.x(), mSize.y(), cr*2, ds*2,
-        mTheme->mDropShadow, mTheme->mTransparent);
+                               ctx, mPos.x(), mPos.y(), mSize.x(), mSize.y(), cr * 2, ds * 2,
+                               mTheme->mDropShadow, mTheme->mTransparent);
 
     nvgSave(ctx);
     nvgResetScissor(ctx);
     nvgBeginPath(ctx);
-    nvgRect(ctx, mPos.x()-ds,mPos.y()-ds, mSize.x()+2*ds, mSize.y()+2*ds);
+    nvgRect(ctx, mPos.x() - ds, mPos.y() - ds, mSize.x() + 2 * ds, mSize.y() + 2 * ds);
     nvgRoundedRect(ctx, mPos.x(), mPos.y(), mSize.x(), mSize.y(), cr);
     nvgPathWinding(ctx, NVG_HOLE);
     nvgFillPaint(ctx, shadowPaint);
@@ -93,35 +100,36 @@ void Window::draw(NVGcontext *ctx) {
     nvgRestore(ctx);
 
     if (!mTitle.empty()) {
+
         /* Draw header */
-        NVGpaint headerPaint = nvgLinearGradient(
-            ctx, mPos.x(), mPos.y(), mPos.x(),
-            mPos.y() + hh,
-            mTheme->mWindowHeaderGradientTop,
-            mTheme->mWindowHeaderGradientBot);
+        // NVGpaint headerPaint = nvgLinearGradient(
+        //                            ctx, mPos.x(), mPos.y(), mPos.x(),
+        //                            mPos.y() + hh,
+        //                            mTheme->mWindowHeaderGradientTop,
+        //                            mTheme->mWindowHeaderGradientBot);
 
-        nvgBeginPath(ctx);
-        nvgRoundedRect(ctx, mPos.x(), mPos.y(), mSize.x(), hh, cr);
+        // nvgBeginPath(ctx);
+        // nvgRoundedRect(ctx, mPos.x(), mPos.y(), mSize.x(), hh, cr);
 
-        nvgFillPaint(ctx, headerPaint);
-        nvgFill(ctx);
+        // nvgFillPaint(ctx, headerPaint);
+        // nvgFill(ctx);
 
-        nvgBeginPath(ctx);
-        nvgRoundedRect(ctx, mPos.x(), mPos.y(), mSize.x(), hh, cr);
-        nvgStrokeColor(ctx, mTheme->mWindowHeaderSepTop);
+        // nvgBeginPath(ctx);
+        // nvgRoundedRect(ctx, mPos.x(), mPos.y(), mSize.x(), hh, cr);
+        // nvgStrokeColor(ctx, mTheme->mWindowHeaderSepTop);
 
-        nvgSave(ctx);
-        nvgIntersectScissor(ctx, mPos.x(), mPos.y(), mSize.x(), 0.5f);
-        nvgStroke(ctx);
-        nvgRestore(ctx);
+        // nvgSave(ctx);
+        // nvgIntersectScissor(ctx, mPos.x(), mPos.y(), mSize.x(), 0.5f);
+        // nvgStroke(ctx);
+        // nvgRestore(ctx);
 
-        nvgBeginPath(ctx);
-        nvgMoveTo(ctx, mPos.x() + 0.5f, mPos.y() + hh - 1.5f);
-        nvgLineTo(ctx, mPos.x() + mSize.x() - 0.5f, mPos.y() + hh - 1.5);
-        nvgStrokeColor(ctx, mTheme->mWindowHeaderSepBot);
-        nvgStroke(ctx);
+        // nvgBeginPath(ctx);
+        // nvgMoveTo(ctx, mPos.x() + 0.5f, mPos.y() + hh - 1.5f);
+        // nvgLineTo(ctx, mPos.x() + mSize.x() - 0.5f, mPos.y() + hh - 1.5);
+        // nvgStrokeColor(ctx, mTheme->mWindowHeaderSepBot);
+        // nvgStroke(ctx);
 
-        nvgFontSize(ctx, 18.0f);
+        nvgFontSize(ctx, 12.0f);
         nvgFontFace(ctx, "sans-bold");
         nvgTextAlign(ctx, NVG_ALIGN_CENTER | NVG_ALIGN_MIDDLE);
 
@@ -132,7 +140,7 @@ void Window::draw(NVGcontext *ctx) {
 
         nvgFontBlur(ctx, 0);
         nvgFillColor(ctx, mFocused ? mTheme->mWindowTitleFocused
-                                   : mTheme->mWindowTitleUnfocused);
+                     : mTheme->mWindowTitleUnfocused);
         nvgText(ctx, mPos.x() + mSize.x() / 2, mPos.y() + hh / 2 - 1,
                 mTitle.c_str(), nullptr);
     }
