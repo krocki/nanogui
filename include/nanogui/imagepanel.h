@@ -27,8 +27,8 @@ class NANOGUI_EXPORT ImagePanel : public Widget {
     typedef std::vector<std::pair<int, std::string>> Images;
   public:
     ImagePanel(Widget *parent);
-
     ImagePanel(Widget *parent, int t, int s, int m);
+    ImagePanel(Widget *parent, int t, int s, int m, const Vector2i &pos);
 
     void setImages(const Images &data) { mImages = data; }
     const Images& images() const { return mImages; }
@@ -41,18 +41,22 @@ class NANOGUI_EXPORT ImagePanel : public Widget {
     virtual Vector2i preferredSize(NVGcontext *ctx) const override;
     virtual void draw(NVGcontext* ctx) override;
 
+    Vector2i preferredSize() const;
+
     void setThumbSize(int t) {mThumbSize = t; }
     void setSpacing(int s) {mSpacing = s; }
     void setMargin(int m) {mMargin = m; }
+    void setFixedGrid(Vector2i& v) {fixedGridSize = v; }
   protected:
-    Vector2i gridSize() const;
-    int indexForPosition(const Vector2i &p) const;
-  protected:
-    Images mImages;
-    std::function<void(int)> mCallback;
     int mThumbSize;
     int mSpacing;
     int mMargin;
+    Vector2i gridSize() const;
+    Vector2i fixedGridSize;
+    bool fixedGrid;
+    int indexForPosition(const Vector2i &p) const;
+    Images mImages;
+    std::function<void(int)> mCallback;
     int mMouseIndex;
   public:
     EIGEN_MAKE_ALIGNED_OPERATOR_NEW

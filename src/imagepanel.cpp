@@ -17,18 +17,30 @@ NAMESPACE_BEGIN(nanogui)
 
 ImagePanel::ImagePanel(Widget *parent)
     : Widget(parent), mThumbSize(64), mSpacing(10), mMargin(10),
-      mMouseIndex(-1) {}
+      fixedGrid(false), mMouseIndex(-1) { }
 
 ImagePanel::ImagePanel(Widget *parent, int t, int s, int m) :
     Widget(parent), mThumbSize(t), mSpacing(s), mMargin(m),
-    mMouseIndex(-1) { }
+    fixedGrid(false), mMouseIndex(-1) { }
+
+ImagePanel::ImagePanel(Widget *parent, int t, int s, int m, const Vector2i &v) :
+    Widget(parent), mThumbSize(t), mSpacing(s), mMargin(m),
+    fixedGridSize(v), fixedGrid(true), mMouseIndex(-1) { }
 
 Vector2i ImagePanel::gridSize() const {
-    int nCols = 1 + std::max(0,
-                             (int) ((mSize.x() - 2 * mMargin - mThumbSize) /
-                                    (float) (mThumbSize + mSpacing)));
-    int nRows = ((int) mImages.size() + nCols - 1) / nCols;
-    return Vector2i(nCols, nRows);
+
+    if (!fixedGrid) {
+
+        int nCols = 1 + std::max(0,
+                                 (int) ((mSize.x() - 2 * mMargin - mThumbSize) /
+                                        (float) (mThumbSize + mSpacing)));
+        int nRows = ((int) mImages.size() + nCols - 1) / nCols;
+        return Vector2i(nCols, nRows);
+
+    } else {
+
+        return fixedGridSize;
+    }
 }
 
 int ImagePanel::indexForPosition(const Vector2i &p) const {
@@ -63,6 +75,14 @@ Vector2i ImagePanel::preferredSize(NVGcontext *) const {
                grid.x() * mThumbSize + (grid.x() - 1) * mSpacing + 2 * mMargin,
                grid.y() * mThumbSize + (grid.y() - 1) * mSpacing + 2 * mMargin
            );
+}
+
+Vector2i ImagePanel::preferredSize() const {
+    Vector2i grid = gridSize();
+    return  Vector2i(
+                grid.x() * mThumbSize + (grid.x() - 1) * mSpacing + 2 * mMargin,
+                grid.y() * mThumbSize + (grid.y() - 1) * mSpacing + 2 * mMargin
+            );
 }
 
 void ImagePanel::draw(NVGcontext* ctx) {
