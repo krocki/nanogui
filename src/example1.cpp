@@ -71,7 +71,7 @@ using std::pair;
 using std::to_string;
 
 class GLTexture {
-public:
+  public:
     using handleType = std::unique_ptr<uint8_t[], void(*)(void*)>;
     GLTexture() = default;
     GLTexture(const std::string& textureName)
@@ -83,7 +83,7 @@ public:
     GLTexture(const GLTexture& other) = delete;
     GLTexture(GLTexture&& other) noexcept
         : mTextureName(std::move(other.mTextureName)),
-        mTextureId(other.mTextureId) {
+          mTextureId(other.mTextureId) {
         other.mTextureId = 0;
     }
     GLTexture& operator=(const GLTexture& other) = delete;
@@ -119,11 +119,11 @@ public:
         GLint internalFormat;
         GLint format;
         switch (n) {
-            case 1: internalFormat = GL_R8; format = GL_RED; break;
-            case 2: internalFormat = GL_RG8; format = GL_RG; break;
-            case 3: internalFormat = GL_RGB8; format = GL_RGB; break;
-            case 4: internalFormat = GL_RGBA8; format = GL_RGBA; break;
-            default: internalFormat = 0; format = 0; break;
+        case 1: internalFormat = GL_R8; format = GL_RED; break;
+        case 2: internalFormat = GL_RG8; format = GL_RG; break;
+        case 3: internalFormat = GL_RGB8; format = GL_RGB; break;
+        case 4: internalFormat = GL_RGBA8; format = GL_RGBA; break;
+        default: internalFormat = 0; format = 0; break;
         }
         glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, w, h, 0, format, GL_UNSIGNED_BYTE, textureData.get());
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
@@ -133,13 +133,13 @@ public:
         return textureData;
     }
 
-private:
+  private:
     std::string mTextureName;
     GLuint mTextureId;
 };
 
 class ExampleApplication : public nanogui::Screen {
-public:
+  public:
     ExampleApplication() : nanogui::Screen(Eigen::Vector2i(1024, 768), "NanoGUI Test") {
         using namespace nanogui;
 
@@ -160,7 +160,7 @@ public:
         b->setBackgroundColor(Color(0, 0, 255, 25));
         b->setCallback([] { cout << "pushed!" << endl; });
         b->setTooltip("This button has a fairly long tooltip. It is so long, in "
-                "fact, that the shown text will span several lines.");
+                      "fact, that the shown text will span several lines.");
 
         new Label(window, "Toggle buttons", "sans-bold");
         b = new Button(window, "Toggle me");
@@ -219,12 +219,12 @@ public:
         });
 
         vector<pair<int, string>>
-            icons = loadImageDirectory(mNVGContext, "icons");
-        #if defined(_WIN32)
-            string resourcesFolderPath("../resources/");
-        #else
-            string resourcesFolderPath("./");
-        #endif
+                               icons = loadImageDirectory(mNVGContext, "icons");
+#if defined(_WIN32)
+        string resourcesFolderPath("../resources/");
+#else
+        string resourcesFolderPath("./");
+#endif
 
         new Label(window, "Image panel & scroll panel", "sans-bold");
         PopupButton *imagePanelBtn = new PopupButton(window, "Image Panel");
@@ -258,13 +258,13 @@ public:
         imageView->setGridThreshold(20);
         imageView->setPixelInfoThreshold(20);
         imageView->setPixelInfoCallback(
-            [this, imageView](const Vector2i& index) -> pair<string, Color> {
+        [this, imageView](const Vector2i & index) -> pair<string, Color> {
             auto& imageData = mImagesData[mCurrentImage].second;
             auto& textureSize = imageView->imageSize();
             string stringData;
             uint16_t channelSum = 0;
             for (int i = 0; i != 4; ++i) {
-                auto& channelData = imageData[4*index.y()*textureSize.x() + 4*index.x() + i];
+                auto& channelData = imageData[4 * index.y() * textureSize.x() + 4 * index.x() + i];
                 channelSum += channelData;
                 stringData += (to_string(static_cast<int>(channelData)) + "\n");
             }
@@ -281,24 +281,24 @@ public:
         b = new Button(tools, "Open");
         b->setCallback([&] {
             cout << "File dialog result: " << file_dialog(
-                    { {"png", "Portable Network Graphics"}, {"txt", "Text file"} }, false) << endl;
+            { {"png", "Portable Network Graphics"}, {"txt", "Text file"} }, false) << endl;
         });
         b = new Button(tools, "Save");
         b->setCallback([&] {
             cout << "File dialog result: " << file_dialog(
-                    { {"png", "Portable Network Graphics"}, {"txt", "Text file"} }, true) << endl;
+            { {"png", "Portable Network Graphics"}, {"txt", "Text file"} }, true) << endl;
         });
 
         new Label(window, "Combo box", "sans-bold");
         new ComboBox(window, { "Combo box item 1", "Combo box item 2", "Combo box item 3"});
         new Label(window, "Check box", "sans-bold");
         CheckBox *cb = new CheckBox(window, "Flag 1",
-            [](bool state) { cout << "Check box 1 state: " << state << endl; }
-        );
+        [](bool state) { cout << "Check box 1 state: " << state << endl; }
+                                   );
         cb->setChecked(true);
         cb = new CheckBox(window, "Flag 2",
-            [](bool state) { cout << "Check box 2 state: " << state << endl; }
-        );
+        [](bool state) { cout << "Check box 2 state: " << state << endl; }
+                         );
         new Label(window, "Progress bar", "sans-bold");
         mProgress = new ProgressBar(window);
 
@@ -322,12 +322,12 @@ public:
         slider->setFinalCallback([&](float value) {
             cout << "Final slider value: " << (int) (value * 100) << endl;
         });
-        textBox->setFixedSize(Vector2i(60,25));
+        textBox->setFixedSize(Vector2i(60, 25));
         textBox->setFontSize(20);
         textBox->setAlignment(TextBox::Alignment::Right);
 
         window = new Window(this, "Misc. widgets");
-        window->setPosition(Vector2i(425,15));
+        window->setPosition(Vector2i(425, 15));
         window->setLayout(new GroupLayout());
 
         TabWidget* tabWidget = window->add<TabWidget>();
@@ -360,7 +360,7 @@ public:
         // A simple counter.
         int counter = 1;
         tabWidget->setCallback([tabWidget, this, counter] (int index) mutable {
-            if (index == (tabWidget->tabCount()-1)) {
+            if (index == (tabWidget->tabCount() - 1)) {
                 // When the "+" tab has been clicked, simply add a new tab.
                 string tabName = "Dynamic " + to_string(counter);
                 Widget* layerDyn = tabWidget->createTab(index, tabName);
@@ -369,13 +369,13 @@ public:
                 Graph *graphDyn = layerDyn->add<Graph>("Dynamic function");
 
                 graphDyn->setHeader("E = 2.35e-3");
-                graphDyn->setFooter("Iteration " + to_string(index*counter));
+                graphDyn->setFooter("Iteration " + to_string(index * counter));
                 VectorXf &funcDyn = graphDyn->values();
                 funcDyn.resize(100);
                 for (int i = 0; i < 100; ++i)
                     funcDyn[i] = 0.5f *
-                        std::abs((0.5f * std::sin(i / 10.f + counter) +
-                                  0.5f * std::cos(i / 23.f + 1 + counter)));
+                    std::abs((0.5f * std::sin(i / 10.f + counter) +
+                    0.5f * std::cos(i / 23.f + 1 + counter)));
                 ++counter;
                 // We must invoke perform layout from the screen instance to keep everything in order.
                 // This is essential when creating tabs dynamically.
@@ -413,7 +413,7 @@ public:
             new GridLayout(Orientation::Horizontal, 2,
                            Alignment::Middle, 15, 5);
         layout->setColAlignment(
-            { Alignment::Maximum, Alignment::Fill });
+        { Alignment::Maximum, Alignment::Fill });
         layout->setSpacing(0, 10);
         window->setLayout(layout);
 
@@ -456,7 +456,7 @@ public:
         ComboBox *cobo =
             new ComboBox(window, { "Item 1", "Item 2", "Item 3" });
         cobo->setFontSize(16);
-        cobo->setFixedSize(Vector2i(100,20));
+        cobo->setFixedSize(Vector2i(100, 20));
 
         new Label(window, "Color button :", "sans-bold");
         popupBtn = new PopupButton(window, "", 0);
@@ -474,7 +474,7 @@ public:
         Color c = colorwheel->color();
         colorBtn->setBackgroundColor(c);
 
-        colorwheel->setCallback([colorBtn](const Color &value) {
+        colorwheel->setCallback([colorBtn](const Color & value) {
             colorBtn->setBackgroundColor(value);
         });
 
@@ -562,7 +562,7 @@ public:
 
         Matrix4f mvp;
         mvp.setIdentity();
-        mvp.topLeftCorner<3,3>() = Matrix3f(Eigen::AngleAxisf((float) glfwGetTime(),  Vector3f::UnitZ())) * 0.25f;
+        mvp.topLeftCorner<3, 3>() = Matrix3f(Eigen::AngleAxisf((float) glfwGetTime(),  Vector3f::UnitZ())) * 0.25f;
 
         mvp.row(0) *= (float) mSize.y() / (float) mSize.x();
 
@@ -571,7 +571,7 @@ public:
         /* Draw 2 triangles starting at index 0 */
         mShader.drawIndexed(GL_TRIANGLES, 0, 2);
     }
-private:
+  private:
     nanogui::ProgressBar *mProgress;
     nanogui::GLShader mShader;
 
@@ -594,11 +594,11 @@ int main(int /* argc */, char ** /* argv */) {
         nanogui::shutdown();
     } catch (const std::runtime_error &e) {
         std::string error_msg = std::string("Caught a fatal error: ") + std::string(e.what());
-        #if defined(_WIN32)
-            MessageBoxA(nullptr, error_msg.c_str(), NULL, MB_ICONERROR | MB_OK);
-        #else
-            std::cerr << error_msg << endl;
-        #endif
+#if defined(_WIN32)
+        MessageBoxA(nullptr, error_msg.c_str(), NULL, MB_ICONERROR | MB_OK);
+#else
+        std::cerr << error_msg << endl;
+#endif
         return -1;
     }
 
