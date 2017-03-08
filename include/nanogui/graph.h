@@ -21,28 +21,52 @@ NAMESPACE_BEGIN ( nanogui )
  *
  * \brief Simple graph widget for showing a function plot.
  */
+
+const Color barcolormap[] = {
+
+	Color(255, 0, 0, 127),
+	Color(255, 140, 0, 127),
+	Color(229, 255, 0, 127),
+	Color(51, 255, 92, 127),
+	Color(51, 255, 204, 127),
+	Color(153, 224, 255, 127),
+	Color(153, 168, 255, 127),
+	Color(51, 82, 255, 127),
+	Color(242, 0, 255, 127),
+	Color(255, 102, 179, 127)
+
+};
+
+enum class GraphType {
+
+	GRAPH_DEFAULT = 0,
+	GRAPH_NANOGUI = 1,
+	GRAPH_COLORBARS = 2
+
+};
+
 class NANOGUI_EXPORT Graph : public Widget {
-public:
-	Graph ( Widget *parent, const std::string &caption = "Untitled" );
+  public:
+	Graph ( Widget * parent, const std::string &caption = "Untitled", GraphType type = GraphType::GRAPH_DEFAULT );
 
-	const std::string &caption() const { return mCaption; }
-	void setCaption ( const std::string &caption ) { mCaption = caption; }
+	const std::string & caption() const { return mCaption; }
+	void setCaption ( const std::string & caption ) { mCaption = caption; }
 
-	const std::string &header() const { return mHeader; }
-	void setHeader ( const std::string &header ) { mHeader = header; }
+	const std::string & header() const { return mHeader; }
+	void setHeader ( const std::string & header ) { mHeader = header; }
 
-	const std::string &footer() const { return mFooter; }
-	void setFooter ( const std::string &footer ) { mFooter = footer; }
+	const std::string & footer() const { return mFooter; }
+	void setFooter ( const std::string & footer ) { mFooter = footer; }
 
-	const Color &backgroundColor() const { return mBackgroundColor; }
-	void setBackgroundColor ( const Color &backgroundColor ) { mBackgroundColor = backgroundColor; }
+	const Color & backgroundColor() const { return mBackgroundColor; }
+	void setBackgroundColor ( const Color & backgroundColor ) { mBackgroundColor = backgroundColor; }
 
-	const Color &foregroundColor() const { return mForegroundColor; }
-	void setForegroundColor ( const Color &foregroundColor ) { mForegroundColor = foregroundColor; }
+	const Color & foregroundColor() const { return mForegroundColor; }
+	void setForegroundColor ( const Color & foregroundColor ) { mForegroundColor = foregroundColor; }
 
-	const Color &graphColor() const { return mGraphColor; }
+	const Color & graphColor() const { return mGraphColor; }
 
-	void setGraphColor ( const Color &graphColor ) {
+	void setGraphColor ( const Color & graphColor ) {
 
 		mGraphColor = graphColor;
 		mTextColor = graphColor;
@@ -52,27 +76,29 @@ public:
 
 	void setFill ( const bool f ) { mFill = f; }
 
-	const Color &textColor() const { return mTextColor; }
-	void setTextColor ( const Color &textColor ) { mTextColor = textColor; }
+	const Color & textColor() const { return mTextColor; }
+	void setTextColor ( const Color & textColor ) { mTextColor = textColor; }
 
-	const VectorXf &values() const { return mValues; }
-	VectorXf &values() { return mValues; }
-	void setValues ( const VectorXf &values ) { mValues = values; }
+	const VectorXf & values() const { return mValues; }
+	VectorXf & values() { return mValues; }
+	void setValues ( const VectorXf & values ) { mValues = values; }
 
-	virtual Vector2i preferredSize ( NVGcontext *ctx ) const override;
-	virtual void draw ( NVGcontext *ctx ) override;
+	virtual Vector2i preferredSize ( NVGcontext * ctx ) const override;
+	virtual void draw ( NVGcontext * ctx ) override;
 
-	virtual void save ( Serializer &s ) const override;
-	virtual bool load ( Serializer &s ) override;
-protected:
+	virtual void save ( Serializer & s ) const override;
+	virtual bool load ( Serializer & s ) override;
+  protected:
 	std::string mCaption, mHeader, mFooter;
 	Color mBackgroundColor, mForegroundColor, mTextColor, mGraphColor;
 	VectorXf mValues;
-public:
+	GraphType gtype;
+
+  public:
 	bool mFill;
 	bool mBezier;
 
-public:
+  public:
 	EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 };
 
