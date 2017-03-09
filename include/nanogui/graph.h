@@ -14,6 +14,10 @@
 
 #include <nanogui/widget.h>
 
+//to sort indices of colorbars
+#include <numeric>
+#include <vector>
+
 NAMESPACE_BEGIN ( nanogui )
 
 /**
@@ -46,7 +50,7 @@ enum class GraphType {
 };
 
 class NANOGUI_EXPORT Graph : public Widget {
-  public:
+public:
 	Graph ( Widget * parent, const std::string &caption = "Untitled", GraphType type = GraphType::GRAPH_DEFAULT );
 
 	const std::string & caption() const { return mCaption; }
@@ -88,17 +92,17 @@ class NANOGUI_EXPORT Graph : public Widget {
 
 	virtual void save ( Serializer & s ) const override;
 	virtual bool load ( Serializer & s ) override;
-  protected:
+protected:
 	std::string mCaption, mHeader, mFooter;
 	Color mBackgroundColor, mForegroundColor, mTextColor, mGraphColor;
 	VectorXf mValues;
 	GraphType gtype;
 
-  public:
+public:
 	bool mFill;
 	bool mBezier;
 
-  public:
+public:
 	EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 };
 

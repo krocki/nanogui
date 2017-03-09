@@ -22,9 +22,9 @@
 #include <iostream>
 
 #if !defined(_WIN32)
-    #include <locale.h>
-    #include <signal.h>
-    #include <sys/dir.h>
+#include <locale.h>
+#include <signal.h>
+#include <sys/dir.h>
 #endif
 
 NAMESPACE_BEGIN(nanogui)
@@ -32,25 +32,25 @@ NAMESPACE_BEGIN(nanogui)
 extern std::map<GLFWwindow *, Screen *> __nanogui_screens;
 
 #if defined(__APPLE__)
-  extern void disable_saved_application_state_osx();
+extern void disable_saved_application_state_osx();
 #endif
 
 void init() {
-    #if !defined(_WIN32)
-        /* Avoid locale-related number parsing issues */
-        setlocale(LC_NUMERIC, "C");
-    #endif
+#if !defined(_WIN32)
+    /* Avoid locale-related number parsing issues */
+    setlocale(LC_NUMERIC, "C");
+#endif
 
-    #if defined(__APPLE__)
-        disable_saved_application_state_osx();
-    #endif
+#if defined(__APPLE__)
+    disable_saved_application_state_osx();
+#endif
 
     glfwSetErrorCallback(
-        [](int error, const char *descr) {
-            if (error == GLFW_NOT_INITIALIZED)
-                return; /* Ignore */
-            std::cerr << "GLFW error " << error << ": " << descr << std::endl;
-        }
+    [](int error, const char *descr) {
+        if (error == GLFW_NOT_INITIALIZED)
+            return; /* Ignore */
+        std::cerr << "GLFW error " << error << ": " << descr << std::endl;
+    }
     );
 
     if (!glfwInit())
@@ -74,14 +74,14 @@ void mainloop(int refresh) {
            such as progress bars while keeping the system load
            reasonably low */
         refresh_thread = std::thread(
-            [refresh]() {
-                std::chrono::milliseconds time(refresh);
-                while (mainloop_active) {
-                    std::this_thread::sleep_for(time);
-                    glfwPostEmptyEvent();
-                }
+        [refresh]() {
+            std::chrono::milliseconds time(refresh);
+            while (mainloop_active) {
+                std::this_thread::sleep_for(time);
+                glfwPostEmptyEvent();
             }
-        );
+        }
+                         );
     }
 
     try {
@@ -143,12 +143,12 @@ std::array<char, 8> utf8(int c) {
     else if (c <= 0x7fffffff) n = 6;
     seq[n] = '\0';
     switch (n) {
-        case 6: seq[5] = 0x80 | (c & 0x3f); c = c >> 6; c |= 0x4000000;
-        case 5: seq[4] = 0x80 | (c & 0x3f); c = c >> 6; c |= 0x200000;
-        case 4: seq[3] = 0x80 | (c & 0x3f); c = c >> 6; c |= 0x10000;
-        case 3: seq[2] = 0x80 | (c & 0x3f); c = c >> 6; c |= 0x800;
-        case 2: seq[1] = 0x80 | (c & 0x3f); c = c >> 6; c |= 0xc0;
-        case 1: seq[0] = c;
+    case 6: seq[5] = 0x80 | (c & 0x3f); c = c >> 6; c |= 0x4000000;
+    case 5: seq[4] = 0x80 | (c & 0x3f); c = c >> 6; c |= 0x200000;
+    case 4: seq[3] = 0x80 | (c & 0x3f); c = c >> 6; c |= 0x10000;
+    case 3: seq[2] = 0x80 | (c & 0x3f); c = c >> 6; c |= 0x800;
+    case 2: seq[1] = 0x80 | (c & 0x3f); c = c >> 6; c |= 0xc0;
+    case 1: seq[0] = c;
     }
     return seq;
 }
@@ -235,7 +235,7 @@ std::string file_dialog(const std::vector<std::pair<std::string, std::string>> &
         }
         filter.push_back('\0');
     }
-    for (auto pair: filetypes) {
+    for (auto pair : filetypes) {
         filter.append(pair.second);
         filter.append(" (*.");
         filter.append(pair.first);
@@ -264,7 +264,7 @@ std::string file_dialog(const std::vector<std::pair<std::string, std::string>> &
     if (save)
         cmd += "--save ";
     cmd += "--file-filter=\"";
-    for (auto pair: filetypes)
+    for (auto pair : filetypes)
         cmd += "\"*." + pair.first +  "\" ";
     cmd += "\"";
     FILE *output = popen(cmd.c_str(), "r");

@@ -65,17 +65,38 @@ void Graph::draw ( NVGcontext *ctx ) {
 
 		float barwidth = (float)mSize.x() / (float)mValues.size() - 2;
 
+		size_t top_margin = 8;
+
+		//TODO: move somewhere else
+		std::vector<size_t> idx(mValues.size());
+		iota(idx.begin(), idx.end(), 0);
+		sort(idx.begin(), idx.end(), [&](size_t i1, size_t i2) {return mValues[i1] > mValues[i2];});
+
+		char str[64];
+
 		for (size_t i = 0; i < (size_t) mValues.size(); i++) {
 
 			nvgBeginPath(ctx);
 
 			float value = mValues[i];
 
-			nvgRect ( ctx, mPos.x() + i * barwidth + i, mPos.y() + mSize.y(), barwidth, -value * mSize.y());
+			nvgRect ( ctx, mPos.x() + i * barwidth + i, mPos.y() + top_margin + mSize.y(), barwidth, -value * (mSize.y() - top_margin));
 			nvgStrokeColor(ctx, barcolormap[i]);
 			nvgStroke(ctx);
 			nvgFillColor(ctx, Color(barcolormap[i].x(), barcolormap[i].y(), barcolormap[i].z(), barcolormap[i].a() * 0.7));
 			nvgFill(ctx);
+
+		}
+
+		size_t top_k = 2;
+
+		for (size_t k = 0; k < top_k; k++) {
+
+			nvgFontSize ( ctx, 9.0f );
+			nvgTextAlign ( ctx, NVG_ALIGN_RIGHT | NVG_ALIGN_MIDDLE);
+			nvgFillColor ( ctx, barcolormap[idx[k]] );
+			sprintf(str, "%zu: %.2f", idx[k], mValues[idx[k]]);
+			nvgText ( ctx, mPos.x() + mSize.x() - 2, mPos.y() + 5 + k * 7, str, NULL );
 
 		}
 
