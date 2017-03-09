@@ -63,9 +63,9 @@ void Graph::draw ( NVGcontext *ctx ) {
 
 	} else if (gtype == GraphType::GRAPH_COLORBARS) {
 
-		float barwidth = (float)mSize.x() / (float)mValues.size() - 2;
+		float barwidth = (float)mSize.x() / (float)mValues.size() - 1;
 
-		size_t top_margin = 8;
+		size_t top_margin = 17;
 
 		//TODO: move somewhere else
 		std::vector<size_t> idx(mValues.size());
@@ -74,13 +74,23 @@ void Graph::draw ( NVGcontext *ctx ) {
 
 		char str[64];
 
+		nvgBeginPath ( ctx );
+		nvgRect ( ctx, mPos.x() + 1, mPos.y() + 1, mSize.x() - 2, top_margin - 2 );
+		nvgFillColor ( ctx, mBackgroundColor );
+		nvgFill ( ctx );
+
+		nvgBeginPath ( ctx );
+		nvgRect ( ctx, mPos.x(), mPos.y() + top_margin, mSize.x(), mSize.y() - top_margin - 2 );
+		nvgStrokeColor ( ctx, Color ( 100, 100, 100, 32 ) );
+		nvgStroke ( ctx );
+
 		for (size_t i = 0; i < (size_t) mValues.size(); i++) {
 
 			nvgBeginPath(ctx);
 
 			float value = mValues[i];
 
-			nvgRect ( ctx, mPos.x() + i * barwidth + i, mPos.y() + top_margin + mSize.y(), barwidth, -value * (mSize.y() - top_margin));
+			nvgRect ( ctx, mPos.x() + i * barwidth + i, mPos.y() + top_margin + (1.0f - value) * (mSize.y() - top_margin - 2), barwidth, value * (mSize.y() - top_margin - 2));
 			nvgStrokeColor(ctx, barcolormap[i]);
 			nvgStroke(ctx);
 			nvgFillColor(ctx, Color(barcolormap[i].x(), barcolormap[i].y(), barcolormap[i].z(), barcolormap[i].a() * 0.7));
