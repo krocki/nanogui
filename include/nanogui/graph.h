@@ -41,6 +41,21 @@ const Color barcolormap[] = {
 
 };
 
+const Color parula[] = {
+
+	Color(53, 42, 135, 127),
+	Color(15, 92, 221, 127),
+	Color(18, 125, 216, 127),
+	Color(7, 156, 207, 127),
+	Color(21, 177, 180, 127),
+	Color(89, 189, 140, 127),
+	Color(165, 190, 107, 127),
+	Color(225, 185, 82, 127),
+	Color(252, 206, 46, 127),
+	Color(249, 251, 14, 127)
+
+};
+
 enum class GraphType {
 
 	GRAPH_DEFAULT = 0,
@@ -50,7 +65,7 @@ enum class GraphType {
 };
 
 class NANOGUI_EXPORT Graph : public Widget {
-public:
+  public:
 	Graph ( Widget * parent, const std::string &caption = "Untitled", GraphType type = GraphType::GRAPH_DEFAULT );
 
 	const std::string & caption() const { return mCaption; }
@@ -92,17 +107,19 @@ public:
 
 	virtual void save ( Serializer & s ) const override;
 	virtual bool load ( Serializer & s ) override;
-protected:
+  protected:
 	std::string mCaption, mHeader, mFooter;
 	Color mBackgroundColor, mForegroundColor, mTextColor, mGraphColor;
 	VectorXf mValues;
 	GraphType gtype;
 
-public:
+  public:
 	bool mFill;
 	bool mBezier;
 
-public:
+	Color* colormap;
+
+  public:
 	EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 };
 

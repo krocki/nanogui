@@ -26,6 +26,7 @@ Graph::Graph ( Widget *parent, const std::string &caption, GraphType gt)
 	// mForegroundColor = mGraphColor;
 	mFill = false;
 	mBezier = false;
+	colormap = (Color*)(void*)parula;
 }
 
 Vector2i Graph::preferredSize ( NVGcontext * ) const {
@@ -91,9 +92,9 @@ void Graph::draw ( NVGcontext *ctx ) {
 			float value = mValues[i];
 
 			nvgRect ( ctx, mPos.x() + i * barwidth + i, mPos.y() + top_margin + (1.0f - value) * (mSize.y() - top_margin - 2), barwidth, value * (mSize.y() - top_margin - 2));
-			nvgStrokeColor(ctx, barcolormap[i]);
+			nvgStrokeColor(ctx, colormap[i]);
 			nvgStroke(ctx);
-			nvgFillColor(ctx, Color(barcolormap[i].x(), barcolormap[i].y(), barcolormap[i].z(), barcolormap[i].a() * 0.7));
+			nvgFillColor(ctx, Color(colormap[i].x(), colormap[i].y(), colormap[i].z(), colormap[i].a() * 0.7));
 			nvgFill(ctx);
 
 		}
@@ -104,7 +105,7 @@ void Graph::draw ( NVGcontext *ctx ) {
 
 			nvgFontSize ( ctx, 9.0f );
 			nvgTextAlign ( ctx, NVG_ALIGN_RIGHT | NVG_ALIGN_MIDDLE);
-			nvgFillColor ( ctx, barcolormap[idx[k]] );
+			nvgFillColor ( ctx, colormap[idx[k]] );
 			sprintf(str, "%zu: %.2f", idx[k], mValues[idx[k]]);
 			nvgText ( ctx, mPos.x() + mSize.x() - 2, mPos.y() + 5 + k * 7, str, NULL );
 
