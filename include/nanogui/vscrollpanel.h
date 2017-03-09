@@ -24,7 +24,7 @@ NAMESPACE_BEGIN(nanogui)
  *        a certain area.
  */
 class NANOGUI_EXPORT VScrollPanel : public Widget {
-public:
+  public:
     VScrollPanel(Widget *parent);
 
     virtual void performLayout(NVGcontext *ctx) override;
@@ -34,11 +34,11 @@ public:
     virtual void draw(NVGcontext *ctx) override;
     virtual void save(Serializer &s) const override;
     virtual bool load(Serializer &s) override;
-protected:
+  protected:
     int mChildPreferredHeight;
     float mScroll;
     bool mUpdateLayout;
-public:
+  public:
     EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 };
 
