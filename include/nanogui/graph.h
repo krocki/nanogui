@@ -13,6 +13,7 @@
 #pragma once
 
 #include <nanogui/widget.h>
+#include <nanogui/colormaps.h>
 
 //to sort indices of colorbars
 #include <numeric>
@@ -26,47 +27,25 @@ NAMESPACE_BEGIN ( nanogui )
  * \brief Simple graph widget for showing a function plot.
  */
 
-const Color barcolormap[] = {
-
-	Color(255, 0, 0, 127),
-	Color(255, 140, 0, 127),
-	Color(229, 255, 0, 127),
-	Color(51, 255, 92, 127),
-	Color(51, 255, 204, 127),
-	Color(153, 224, 255, 127),
-	Color(153, 168, 255, 127),
-	Color(51, 82, 255, 127),
-	Color(242, 0, 255, 127),
-	Color(255, 102, 179, 127)
-
-};
-
-const Color parula[] = {
-
-	Color(53, 42, 135, 127),
-	Color(15, 92, 221, 127),
-	Color(18, 125, 216, 127),
-	Color(7, 156, 207, 127),
-	Color(21, 177, 180, 127),
-	Color(89, 189, 140, 127),
-	Color(165, 190, 107, 127),
-	Color(225, 185, 82, 127),
-	Color(252, 206, 46, 127),
-	Color(249, 251, 14, 127)
-
-};
-
 enum class GraphType {
 
 	GRAPH_DEFAULT = 0,
 	GRAPH_NANOGUI = 1,
-	GRAPH_COLORBARS = 2
+	GRAPH_COLORBARS = 2,
+	GRAPH_NANOGUI_NOFILL = 3,
 
 };
 
+#define GRAPH_DEF_WIDTH 180
+#define GRAPH_DEF_HEIGHT 45
+
 class NANOGUI_EXPORT Graph : public Widget {
   public:
-	Graph ( Widget * parent, const std::string &caption = "Untitled", GraphType type = GraphType::GRAPH_DEFAULT );
+	Graph ( Widget * parent, const std::string &caption = "",
+	        GraphType type = GraphType::GRAPH_DEFAULT,
+	        Color gcolor = Color ( 127, 127, 127, 64 ),
+	        std::function<Color(const float)> cmap = (std::function<Color(const float)>()),
+	        Vector2i sz = Vector2i(GRAPH_DEF_WIDTH, GRAPH_DEF_HEIGHT));
 
 	const std::string & caption() const { return mCaption; }
 	void setCaption ( const std::string & caption ) { mCaption = caption; }
@@ -100,6 +79,10 @@ class NANOGUI_EXPORT Graph : public Widget {
 
 	const VectorXf & values() const { return mValues; }
 	VectorXf & values() { return mValues; }
+
+	const VectorXf* values_ptr() const { return &mValues; }
+	VectorXf* values_ptr() { return &mValues; }
+
 	void setValues ( const VectorXf & values ) { mValues = values; }
 
 	virtual Vector2i preferredSize ( NVGcontext * ctx ) const override;
@@ -107,17 +90,19 @@ class NANOGUI_EXPORT Graph : public Widget {
 
 	virtual void save ( Serializer & s ) const override;
 	virtual bool load ( Serializer & s ) override;
+
   protected:
+
 	std::string mCaption, mHeader, mFooter;
 	Color mBackgroundColor, mForegroundColor, mTextColor, mGraphColor;
-	VectorXf mValues;
+
 	GraphType gtype;
+	std::function<Color(const float)> mColormap;
 
   public:
+	VectorXf mValues;
 	bool mFill;
 	bool mBezier;
-
-	Color* colormap;
 
   public:
 	EIGEN_MAKE_ALIGNED_OPERATOR_NEW

@@ -16,17 +16,20 @@
 
 NAMESPACE_BEGIN ( nanogui )
 
-Graph::Graph ( Widget *parent, const std::string &caption, GraphType gt)
-	: Widget ( parent ), mCaption ( caption ), gtype(gt) {
+Graph::Graph ( Widget *parent, const std::string &caption, GraphType gt, Color gColor,
+               std::function<Color(const float)> cmap, Vector2i sz)
+	: Widget ( parent ), mCaption ( caption ), mGraphColor(gColor), gtype(gt), mColormap(cmap) {
 
-	Widget::setSize ( {180, 45} );
-	mBackgroundColor = Color ( 20, 128 );
-	// mGraphColor =  Color ( 255, 192, 0, 128 );
-	// mTextColor = mGraphColor;
+	Widget::setSize ( sz );
+	mBackgroundColor = Color ( 16, 16, 16, 64 );
+	mTextColor = mGraphColor;
 	// mForegroundColor = mGraphColor;
 	mFill = false;
 	mBezier = false;
-	colormap = (Color*)(void*)parula;
+
+	if (!mColormap)
+		mColormap = [&](float) { return mGraphColor; };
+
 }
 
 Vector2i Graph::preferredSize ( NVGcontext * ) const {
@@ -41,26 +44,40 @@ void Graph::draw ( NVGcontext *ctx ) {
 	nvgFillColor ( ctx, mBackgroundColor );
 	nvgFill ( ctx );
 
-	if (gtype == GraphType::GRAPH_NANOGUI) {
+	if (gtype == GraphType::GRAPH_NANOGUI || gtype == GraphType::GRAPH_NANOGUI_NOFILL) {
 
 		if ( mValues.size() < 2 )
 			return;
 
 		nvgBeginPath(ctx);
-		nvgMoveTo(ctx, mPos.x(), mPos.y() + mSize.y());
+
+		if (gtype == GraphType::GRAPH_NANOGUI)
+			nvgMoveTo(ctx, mPos.x(), mPos.y() + mSize.y());
 
 		for (size_t i = 0; i < (size_t) mValues.size(); i++) {
+
 			float value = mValues[i];
 			float vx = mPos.x() + i * mSize.x() / (float) (mValues.size() - 1);
 			float vy = mPos.y() + (1 - value) * mSize.y();
-			nvgLineTo(ctx, vx, vy);
+
+			if (i == 0 && gtype == GraphType::GRAPH_NANOGUI_NOFILL)
+				nvgMoveTo(ctx, vx, vy);
+			else
+				nvgLineTo(ctx, vx, vy);
 		}
 
-		nvgLineTo(ctx, mPos.x() + mSize.x(), mPos.y() + mSize.y());
-		nvgStrokeColor(ctx, Color(100, 255));
+		if (gtype == GraphType::GRAPH_NANOGUI)
+			nvgLineTo(ctx, mPos.x() + mSize.x(), mPos.y() + mSize.y());
+
+		nvgStrokeColor(ctx, mColormap(mValues.mean()));
 		nvgStroke(ctx);
-		nvgFillColor(ctx, mForegroundColor);
-		nvgFill(ctx);
+
+		if (gtype == GraphType::GRAPH_NANOGUI) {
+
+			nvgFillColor(ctx, mForegroundColor);
+			nvgFill(ctx);
+
+		}
 
 	} else if (gtype == GraphType::GRAPH_COLORBARS) {
 
@@ -92,9 +109,9 @@ void Graph::draw ( NVGcontext *ctx ) {
 			float value = mValues[i];
 
 			nvgRect ( ctx, mPos.x() + i * barwidth + i, mPos.y() + top_margin + (1.0f - value) * (mSize.y() - top_margin - 2), barwidth, value * (mSize.y() - top_margin - 2));
-			nvgStrokeColor(ctx, colormap[i]);
+			nvgStrokeColor(ctx, parula_lut[i]);
 			nvgStroke(ctx);
-			nvgFillColor(ctx, Color(colormap[i].x(), colormap[i].y(), colormap[i].z(), colormap[i].a() * 0.7));
+			nvgFillColor(ctx, Color(parula_lut[i].x(), parula_lut[i].y(), parula_lut[i].z(), parula_lut[i].a() * 0.7));
 			nvgFill(ctx);
 
 		}
@@ -105,7 +122,7 @@ void Graph::draw ( NVGcontext *ctx ) {
 
 			nvgFontSize ( ctx, 9.0f );
 			nvgTextAlign ( ctx, NVG_ALIGN_RIGHT | NVG_ALIGN_MIDDLE);
-			nvgFillColor ( ctx, colormap[idx[k]] );
+			nvgFillColor ( ctx, parula_lut[idx[k]] );
 			sprintf(str, "%zu: %.2f", idx[k], mValues[idx[k]]);
 			nvgText ( ctx, mPos.x() + mSize.x() - 2, mPos.y() + 5 + k * 7, str, NULL );
 

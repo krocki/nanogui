@@ -25,7 +25,8 @@ enum class Alignment : uint8_t {
     Minimum = 0,
     Middle,
     Maximum,
-    Fill
+    Fill,
+    Fill2D
 };
 
 /// The direction of data flow for a layout.
@@ -40,10 +41,10 @@ enum class Orientation {
  * \brief Basic interface of a layout engine.
  */
 class NANOGUI_EXPORT Layout : public Object {
-public:
+  public:
     virtual void performLayout(NVGcontext *ctx, Widget *widget) const = 0;
     virtual Vector2i preferredSize(NVGcontext *ctx, const Widget *widget) const = 0;
-protected:
+  protected:
     virtual ~Layout() { }
 };
 
@@ -57,7 +58,7 @@ protected:
  * widgets.
  */
 class NANOGUI_EXPORT BoxLayout : public Layout {
-public:
+  public:
     /**
      * \brief Construct a box layout which packs widgets in the given \c Orientation
      *
@@ -70,7 +71,8 @@ public:
      * \param spacing
      *     Extra spacing placed between widgets
      */
-    BoxLayout(Orientation orientation, Alignment alignment = Alignment::Middle,
+    BoxLayout(Orientation orientation = Orientation::Vertical,
+              Alignment alignment = Alignment::Fill2D,
               int margin = 0, int spacing = 0);
 
     Orientation orientation() const { return mOrientation; }
@@ -89,7 +91,7 @@ public:
     virtual Vector2i preferredSize(NVGcontext *ctx, const Widget *widget) const override;
     virtual void performLayout(NVGcontext *ctx, Widget *widget) const override;
 
-protected:
+  protected:
     Orientation mOrientation;
     Alignment mAlignment;
     int mMargin;
@@ -109,7 +111,7 @@ protected:
  * under some high-level heading.
  */
 class NANOGUI_EXPORT GroupLayout : public Layout {
-public:
+  public:
     GroupLayout(int margin = 15, int spacing = 6, int groupSpacing = 14,
                 int groupIndent = 20)
         : mMargin(margin), mSpacing(spacing), mGroupSpacing(groupSpacing),
@@ -131,7 +133,7 @@ public:
     virtual Vector2i preferredSize(NVGcontext *ctx, const Widget *widget) const override;
     virtual void performLayout(NVGcontext *ctx, Widget *widget) const override;
 
-protected:
+  protected:
     int mMargin;
     int mSpacing;
     int mGroupSpacing;
@@ -150,7 +152,7 @@ protected:
  * row and column.
  */
 class NANOGUI_EXPORT GridLayout : public Layout {
-public:
+  public:
     /// Create a 2-column grid layout by default
     GridLayout(Orientation orientation = Orientation::Horizontal, int resolution = 2,
                Alignment alignment = Alignment::Middle,
@@ -191,19 +193,19 @@ public:
     virtual Vector2i preferredSize(NVGcontext *ctx, const Widget *widget) const override;
     virtual void performLayout(NVGcontext *ctx, Widget *widget) const override;
 
-protected:
+  protected:
     // Compute the maximum row and column sizes
     void computeLayout(NVGcontext *ctx, const Widget *widget,
                        std::vector<int> *grid) const;
 
-protected:
+  protected:
     Orientation mOrientation;
     Alignment mDefaultAlignment[2];
     std::vector<Alignment> mAlignment[2];
     int mResolution;
     Vector2i mSpacing;
     int mMargin;
-public:
+  public:
     EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 };
 
@@ -242,7 +244,7 @@ public:
  * - https://github.com/jaapgeurts/higlayout
  */
 class NANOGUI_EXPORT AdvancedGridLayout : public Layout {
-public:
+  public:
     /**
      * \struct Anchor layout.h nanogui/layout.h
      *
@@ -256,15 +258,15 @@ public:
         Anchor() { }
 
         Anchor(int x, int y, Alignment horiz = Alignment::Fill,
-              Alignment vert = Alignment::Fill) {
+               Alignment vert = Alignment::Fill) {
             pos[0] = (uint8_t) x; pos[1] = (uint8_t) y;
             size[0] = size[1] = 1;
             align[0] = horiz; align[1] = vert;
         }
 
         Anchor(int x, int y, int w, int h,
-              Alignment horiz = Alignment::Fill,
-              Alignment vert = Alignment::Fill) {
+               Alignment horiz = Alignment::Fill,
+               Alignment vert = Alignment::Fill) {
             pos[0] = (uint8_t) x; pos[1] = (uint8_t) y;
             size[0] = (uint8_t) w; size[1] = (uint8_t) h;
             align[0] = horiz; align[1] = vert;
@@ -273,7 +275,7 @@ public:
         operator std::string() const {
             char buf[50];
             NANOGUI_SNPRINTF(buf, 50, "Format[pos=(%i, %i), size=(%i, %i), align=(%i, %i)]",
-                pos[0], pos[1], size[0], size[1], (int) align[0], (int) align[1]);
+                             pos[0], pos[1], size[0], size[1], (int) align[0], (int) align[1]);
             return buf;
         }
     };
@@ -316,11 +318,11 @@ public:
     virtual Vector2i preferredSize(NVGcontext *ctx, const Widget *widget) const override;
     virtual void performLayout(NVGcontext *ctx, Widget *widget) const override;
 
-protected:
+  protected:
     void computeLayout(NVGcontext *ctx, const Widget *widget,
                        std::vector<int> *grid) const;
 
-protected:
+  protected:
     std::vector<int> mCols, mRows;
     std::vector<float> mColStretch, mRowStretch;
     std::unordered_map<const Widget *, Anchor> mAnchor;

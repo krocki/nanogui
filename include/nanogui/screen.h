@@ -27,7 +27,7 @@ NAMESPACE_BEGIN(nanogui)
 class NANOGUI_EXPORT Screen : public Widget {
     friend class Widget;
     friend class Window;
-public:
+  public:
     /**
      * Create a new Screen instance
      *
@@ -100,6 +100,8 @@ public:
 
     /// Set the top-level window visibility (no effect on full-screen windows)
     void setVisible(bool visible);
+    bool getVisible() { return mVisible; }
+    void bindVisible(bool& external) {external = mVisible; }
 
     /// Set window size
     void setSize(const Vector2i& size);
@@ -148,7 +150,7 @@ public:
         Widget::performLayout(mNVGContext);
     }
 
-public:
+  public:
     /********* API for applications which manage GLFW themselves *********/
 
     /**
@@ -184,7 +186,7 @@ public:
     void moveWindowToFront(Window *window);
     void drawWidgets();
 
-protected:
+  protected:
     GLFWwindow *mGLFWWindow;
     NVGcontext *mNVGContext;
     GLFWcursor *mCursors[(int) Cursor::CursorCount];
@@ -203,7 +205,7 @@ protected:
     bool mShutdownGLFWOnDestruct;
     bool mFullscreen;
     std::function<void(Vector2i)> mResizeCallback;
-public:
+  public:
     EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 };
 

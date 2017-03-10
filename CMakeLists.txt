@@ -195,8 +195,8 @@ if (NANOGUI_USE_GLAD)
   # Build and include GLAD on Windows
   list(APPEND LIBNANOGUI_EXTRA_SOURCE
      "${CMAKE_CURRENT_SOURCE_DIR}/ext/glad/src/glad.c"
-	 "${CMAKE_CURRENT_SOURCE_DIR}/ext/glad/include/glad/glad.h"
-	 "${CMAKE_CURRENT_SOURCE_DIR}/ext/glad/include/KHR/khrplatform.h")
+   "${CMAKE_CURRENT_SOURCE_DIR}/ext/glad/include/glad/glad.h"
+   "${CMAKE_CURRENT_SOURCE_DIR}/ext/glad/include/KHR/khrplatform.h")
   if (MSVC)
     set_source_files_properties("${CMAKE_CURRENT_SOURCE_DIR}/ext/glad/src/glad.c"
       PROPERTIES COMPILE_FLAGS "/wd4055 ")
@@ -323,6 +323,7 @@ add_library(nanogui-obj OBJECT
   include/nanogui/colorwheel.h src/colorwheel.cpp
   include/nanogui/colorpicker.h src/colorpicker.cpp
   include/nanogui/graph.h src/graph.cpp
+  include/nanogui/colormaps.h src/colormaps.cpp
   include/nanogui/sq_graph.h src/sq_graph.cpp
   include/nanogui/stackedwidget.h src/stackedwidget.cpp
   include/nanogui/tabheader.h src/tabheader.cpp
@@ -546,3 +547,4 @@ else()
 endif()
 
 # vim: set et ts=2 sw=2 ft=cmake nospell:
+ 

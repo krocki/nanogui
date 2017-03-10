@@ -61,6 +61,7 @@ void Window::performLayout(NVGcontext *ctx) {
         mButtonPanel->setPosition(Vector2i(width() - (mButtonPanel->preferredSize(ctx).x() + 5), 3));
         mButtonPanel->performLayout(ctx);
     }
+
 }
 
 void Window::draw(NVGcontext *ctx) {

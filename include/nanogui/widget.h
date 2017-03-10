@@ -29,7 +29,7 @@ enum class Cursor;// do not put a docstring, this is already documented
  * widgets using a layout generator (see \ref Layout).
  */
 class NANOGUI_EXPORT Widget : public Object {
-public:
+  public:
     /// Construct a new widget with the given parent widget
     Widget(Widget *parent);
 
@@ -62,7 +62,7 @@ public:
     /// Return the absolute position on screen
     Vector2i absolutePosition() const {
         return mParent ?
-            (parent()->absolutePosition() + mPos) : mPos;
+               (parent()->absolutePosition() + mPos) : mPos;
     }
 
     /// Return the size of the widget
@@ -196,7 +196,7 @@ public:
 
     /// Check if the widget contains a certain position
     bool contains(const Vector2i &p) const {
-        auto d = (p-mPos).array();
+        auto d = (p - mPos).array();
         return (d >= 0).all() && (d < mSize.array()).all();
     }
 
@@ -242,11 +242,11 @@ public:
     /// Restore the state of the widget from the given \ref Serializer instance
     virtual bool load(Serializer &s);
 
-protected:
+  protected:
     /// Free all resources used by the widget and any children
     virtual ~Widget();
 
-protected:
+  protected:
     Widget *mParent;
     ref<Theme> mTheme;
     ref<Layout> mLayout;
@@ -258,7 +258,7 @@ protected:
     std::string mTooltip;
     int mFontSize;
     Cursor mCursor;
-public:
+  public:
     EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 };
 
