@@ -17,7 +17,7 @@
 #include <nanogui/opengl.h>
 #include <nanogui/glutil.h>
 
-NAMESPACE_BEGIN(nanogui)
+NAMESPACE_BEGIN ( nanogui )
 
 /**
  * \class GLCanvas glcanvas.h nanogui/glcanvas.h
@@ -31,39 +31,41 @@ NAMESPACE_BEGIN(nanogui)
  * Usage: override `drawGL` in subclasses to provide custom drawing code.
  */
 class NANOGUI_EXPORT GLCanvas : public Widget {
-public:
-    GLCanvas(Widget *parent);
-
-    /// Return the background color
-    const Color &backgroundColor() const { return mBackgroundColor; }
-    /// Set the background color
-    void setBackgroundColor(const Color &backgroundColor) { mBackgroundColor = backgroundColor; }
-
-    /// Set whether to draw the widget border or not
-    void setDrawBorder(const bool bDrawBorder) { mDrawBorder = bDrawBorder; }
-    /// Return whether the widget border gets drawn or not
-    const bool &drawBorder() const { return mDrawBorder; }
-
-    /// Draw the canvas
-    virtual void draw(NVGcontext *ctx) override;
-
-    /// Draw the GL scene. Override this method to draw the actual GL
-    /// content.
-    virtual void drawGL() {}
-
-    /// Save and load widget properties
-    virtual void save(Serializer &s) const override;
-    virtual bool load(Serializer &s) override;
-
-protected:
-    /// Internal helper function for drawing the widget border
-    void drawWidgetBorder(NVGcontext* ctx) const;
-
-protected:
-    Color mBackgroundColor;
-    bool mDrawBorder;
-public:
-    EIGEN_MAKE_ALIGNED_OPERATOR_NEW
+	public:
+		GLCanvas ( Widget *parent, bool use_overlay = true );
+		
+		/// Return the background color
+		const Color &backgroundColor() const { return mBackgroundColor; }
+		/// Set the background color
+		void setBackgroundColor ( const Color &backgroundColor ) { mBackgroundColor = backgroundColor; }
+		
+		/// Set whether to draw the widget border or not
+		void setDrawBorder ( const bool bDrawBorder ) { mDrawBorder = bDrawBorder; }
+		/// Return whether the widget border gets drawn or not
+		const bool &drawBorder() const { return mDrawBorder; }
+		
+		/// Draw the canvas
+		virtual void draw ( NVGcontext *ctx ) override;
+		
+		/// Draw the GL scene. Override this method to draw the actual GL
+		/// content.
+		virtual void drawGL() {}
+		
+		/// Save and load widget properties
+		virtual void save ( Serializer &s ) const override;
+		virtual bool load ( Serializer &s ) override;
+		
+	protected:
+		/// Internal helper function for drawing the widget border
+		void drawWidgetBorder ( NVGcontext *ctx ) const;
+		
+	protected:
+		Color mBackgroundColor;
+		bool mDrawBorder;
+		bool overlay;
+		
+	public:
+		EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 };
 
-NAMESPACE_END(nanogui)
+NAMESPACE_END ( nanogui )
