@@ -95,6 +95,98 @@ static float get_pixel_ratio ( GLFWwindow *window ) {
 #endif
 }
 
+static GLFWmonitor* get_best_monitor() {
+	int nmonitors, i;
+	int area = -1;
+	int w, h, idx;
+
+	GLFWmonitor *bestmonitor;
+	GLFWmonitor **monitors;
+	const GLFWvidmode *mode;
+
+	bestmonitor = NULL;
+
+	monitors = glfwGetMonitors(&nmonitors);
+
+	for (i = 0; i < nmonitors; i++) {
+		mode = glfwGetVideoMode(monitors[i]);
+		if (area < mode->width * mode->height || area < 0) {
+			area = mode->width * mode->height;
+			w = mode->width;
+			h = mode->height;
+			bestmonitor = monitors[i];
+			idx = i;
+		}
+	}
+
+	printf("Best monitor = %d, resolution = %d x %d\n", idx, w, h);
+
+	return bestmonitor;
+}
+
+static std::vector<Eigen::Vector2i> get_glfw_video_modes() {
+
+	printf ( "finding monitors...\n" );
+	GLFWmonitor *primary = glfwGetPrimaryMonitor ();
+	GLFWmonitor *bestmonitor = get_best_monitor();
+
+	{
+		int count = 0;
+		GLFWmonitor **monitors = glfwGetMonitors ( &count );
+		printf ( "found %i monitors\n\n", count );
+		printf ( "| # |primary|best|     name     |       vid mode       |\n" );
+		printf ( "|---|-------|----|--------------|----------------------|\n" );
+
+		for ( int i = 0; i < count; i++ ) {
+			char prim = 'n';
+			char best = 'n';
+
+			if ( monitors[i] == primary )
+				prim = 'Y';
+			if ( monitors[i] == bestmonitor )
+				best = 'Y';
+
+			const char *name = glfwGetMonitorName ( monitors[i] );
+			const GLFWvidmode *curr_mode = glfwGetVideoMode ( monitors[i] );
+			int w = curr_mode->width;
+			int h = curr_mode->height;
+			int hz = curr_mode->refreshRate;
+			int bpp = curr_mode->blueBits + curr_mode->greenBits + curr_mode->redBits;
+			//const GLFWgammaramp* glfwGetGammaRamp (monitors[i]);
+
+			printf ( "|%2i |   %c   | %c | %12s | %4ix%4i %ibpp %iHz |\n", i, prim, best, name, w,
+			         h, bpp, hz );
+		}
+
+		printf ( "\n" );
+	}
+
+	// TODO try this auto-set gamma ramp on laptop
+	// glfwSetGamma (monitor, 1.0);
+
+	std::vector<Eigen::Vector2i> available_modes;
+
+	printf ( "Primary monitor: finding video modes...\n" );
+	{
+		int count = 0;
+		const GLFWvidmode *modes = glfwGetVideoModes ( primary, &count );
+		printf ( "found %i video modes\n\n", count );
+
+		for ( int i = 0; i < count; i++ ) {
+			int w = modes[i].width;
+			int h = modes[i].height;
+			int bpp = modes[i].blueBits + modes[i].greenBits + modes[i].redBits;
+			int hz = modes[i].refreshRate;
+			printf ( "%3i) %ix%i %ibpp %iHz\n", i, w, h, bpp, hz );
+			available_modes.emplace_back(w, h);
+		}
+
+		printf ( "\n" );
+	}
+
+	return available_modes;
+}
+
 Screen::Screen()
 	: Widget ( nullptr ), mGLFWWindow ( nullptr ), mNVGContext ( nullptr ),
 	  mCursor ( Cursor::Arrow ), mBackground ( 0.3f, 0.3f, 0.32f, 1.f ),
@@ -105,7 +197,7 @@ Screen::Screen()
 Screen::Screen ( const Vector2i &size, const std::string &caption, bool resizable,
                  bool fullscreen, int colorBits, int alphaBits, int depthBits,
                  int stencilBits, int nSamples,
-                 unsigned int glMajor, unsigned int glMinor )
+                 unsigned int glMajor, unsigned int glMinor, bool vsync )
 	: Widget ( nullptr ), mGLFWWindow ( nullptr ), mNVGContext ( nullptr ),
 	  mCursor ( Cursor::Arrow ), mBackground ( 0.3f, 0.3f, 0.32f, 1.f ), mCaption ( caption ),
 	  mShutdownGLFWOnDestruct ( false ), mFullscreen ( fullscreen ) {
@@ -130,8 +222,11 @@ Screen::Screen ( const Vector2i &size, const std::string &caption, bool resizabl
 
 	if ( fullscreen ) {
 		GLFWmonitor *monitor = glfwGetPrimaryMonitor();
+
 		const GLFWvidmode *mode = glfwGetVideoMode ( monitor );
-		mGLFWWindow = glfwCreateWindow ( mode->width, mode->height,
+		printf("Entering fullscreen @ %d x %d px\n", size.x(), size.y());
+
+		mGLFWWindow = glfwCreateWindow ( size.x(), size.y(),
 		                                 caption.c_str(), monitor, nullptr );
 	} else {
 		mGLFWWindow = glfwCreateWindow ( size.x(), size.y(),
@@ -162,7 +257,7 @@ Screen::Screen ( const Vector2i &size, const std::string &caption, bool resizabl
 	glViewport ( 0, 0, mFBSize[0], mFBSize[1] );
 	glClearColor ( mBackground[0], mBackground[1], mBackground[2], mBackground[3] );
 	glClear ( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT );
-	glfwSwapInterval ( 0 );
+	glfwSwapInterval ( vsync ? 1 : 0 );
 	glfwSwapBuffers ( mGLFWWindow );
 
 #if defined(__APPLE__)
@@ -301,6 +396,7 @@ void Screen::initialize ( GLFWwindow *window, bool shutdownGLFWOnDestruct ) {
 	glfwGetFramebufferSize ( mGLFWWindow, &mFBSize[0], &mFBSize[1] );
 
 	mPixelRatio = get_pixel_ratio ( window );
+	mVideoModes = get_glfw_video_modes();
 
 #if defined(_WIN32) || defined(__linux__)
 
@@ -327,6 +423,9 @@ void Screen::initialize ( GLFWwindow *window, bool shutdownGLFWOnDestruct ) {
 	glGetFramebufferAttachmentParameteriv ( GL_DRAW_FRAMEBUFFER,
 	                                        GL_STENCIL, GL_FRAMEBUFFER_ATTACHMENT_STENCIL_SIZE, &nStencilBits );
 	glGetIntegerv ( GL_SAMPLES, &nSamples );
+
+	printf("nanogui::Screen(): GL_FRAMEBUFFER_ATTACHMENT_STENCIL_SIZE = %d\n", nStencilBits);
+	printf("nanogui::Screen(): GL_SAMPLES = %d\n\n", nSamples);
 
 	int flags = 0;
 
@@ -360,6 +459,12 @@ void Screen::initialize ( GLFWwindow *window, bool shutdownGLFWOnDestruct ) {
 	/// Fixes retina display-related font rendering issue (#185)
 	nvgBeginFrame ( mNVGContext, mSize[0], mSize[1], mPixelRatio );
 	nvgEndFrame ( mNVGContext );
+}
+
+void Screen::set_vsync(int interval) {
+
+	glfwSwapInterval ( interval );
+
 }
 
 Screen::~Screen() {
