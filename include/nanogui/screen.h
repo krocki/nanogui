@@ -27,7 +27,7 @@ NAMESPACE_BEGIN ( nanogui )
 class NANOGUI_EXPORT Screen : public Widget {
 	friend class Widget;
 	friend class Window;
-public:
+  public:
 	/**
 	 * Create a new Screen instance
 	 *
@@ -81,7 +81,7 @@ public:
 	         bool resizable = true, bool fullscreen = false, int colorBits = 8,
 	         int alphaBits = 8, int depthBits = 24, int stencilBits = 8,
 	         int nSamples = 4,
-	         unsigned int glMajor = 3, unsigned int glMinor = 3, bool vsync = true );
+	         unsigned int glMajor = 3, unsigned int glMinor = 3, bool vsync = true, bool autosize = true, float autosize_ratio = 1.0f );
 
 	/// Release all resources
 	virtual ~Screen();
@@ -117,7 +117,7 @@ public:
 	/// Return the ratio between pixel and device coordinates (e.g. >= 2 on Mac Retina displays)
 	float pixelRatio() const { return mPixelRatio; }
 
-	std::vector<Eigen::Vector2i> glfw_video_modes() { return mVideoModes; };
+	std::vector<Eigen::Vector2i> get_glfw_video_modes();
 
 	/// Handle a file drop event
 	virtual bool dropEvent ( const std::vector<std::string> & /* filenames */ ) { return false; /* To be overridden */ }
@@ -154,7 +154,7 @@ public:
 		Widget::performLayout ( mNVGContext );
 	}
 
-public:
+  public:
 	/********* API for applications which manage GLFW themselves *********/
 
 	/**
@@ -190,7 +190,7 @@ public:
 	void moveWindowToFront ( Window *window );
 	void drawWidgets();
 
-protected:
+  protected:
 	GLFWwindow *mGLFWWindow;
 	NVGcontext *mNVGContext;
 	GLFWcursor *mCursors[ ( int ) Cursor::CursorCount];
@@ -209,8 +209,7 @@ protected:
 	bool mShutdownGLFWOnDestruct;
 	bool mFullscreen;
 	std::function<void ( Vector2i )> mResizeCallback;
-	std::vector<Eigen::Vector2i> mVideoModes;
-public:
+  public:
 	EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 };
 

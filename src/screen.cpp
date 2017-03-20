@@ -119,21 +119,23 @@ static GLFWmonitor* get_best_monitor() {
 		}
 	}
 
-	printf("Best monitor = %d, resolution = %d x %d\n", idx, w, h);
-
 	return bestmonitor;
 }
 
-static std::vector<Eigen::Vector2i> get_glfw_video_modes() {
+std::vector<Eigen::Vector2i> Screen::get_glfw_video_modes() {
 
-	printf ( "finding monitors...\n" );
+	printf ( "GLFW: finding monitors...\n" );
 	GLFWmonitor *primary = glfwGetPrimaryMonitor ();
 	GLFWmonitor *bestmonitor = get_best_monitor();
 
+	std::vector<Eigen::Vector2i> available_modes;
+
 	{
 		int count = 0;
+		int count_modes = 0;
+
 		GLFWmonitor **monitors = glfwGetMonitors ( &count );
-		printf ( "found %i monitors\n\n", count );
+		printf ( "GLFW: found %i monitors\n\n", count );
 		printf ( "| # |primary|best|     name     |       vid mode       |\n" );
 		printf ( "|---|-------|----|--------------|----------------------|\n" );
 
@@ -154,31 +156,23 @@ static std::vector<Eigen::Vector2i> get_glfw_video_modes() {
 			int bpp = curr_mode->blueBits + curr_mode->greenBits + curr_mode->redBits;
 			//const GLFWgammaramp* glfwGetGammaRamp (monitors[i]);
 
+			// current mode is id 0
+			available_modes.emplace_back(w, h);
+
+			printf("--- Current mode --- \n");
 			printf ( "|%2i |   %c   | %c | %12s | %4ix%4i %ibpp %iHz |\n", i, prim, best, name, w,
 			         h, bpp, hz );
-		}
+			printf("--- All modes --- \n");
 
-		printf ( "\n" );
-	}
+			const GLFWvidmode *modes = glfwGetVideoModes ( monitors[i], &count_modes );
+			for ( int i = 0; i < count_modes; i++ ) {
+				int w = modes[i].width;
+				int h = modes[i].height;
+				int bpp = modes[i].blueBits + modes[i].greenBits + modes[i].redBits;
+				int hz = modes[i].refreshRate;
+				printf ( "|%2i |       |   | %12s | %4ix%4i %ibpp %iHz |\n", i + 1, name, w, h, bpp, hz );
+			}
 
-	// TODO try this auto-set gamma ramp on laptop
-	// glfwSetGamma (monitor, 1.0);
-
-	std::vector<Eigen::Vector2i> available_modes;
-
-	printf ( "Primary monitor: finding video modes...\n" );
-	{
-		int count = 0;
-		const GLFWvidmode *modes = glfwGetVideoModes ( primary, &count );
-		printf ( "found %i video modes\n\n", count );
-
-		for ( int i = 0; i < count; i++ ) {
-			int w = modes[i].width;
-			int h = modes[i].height;
-			int bpp = modes[i].blueBits + modes[i].greenBits + modes[i].redBits;
-			int hz = modes[i].refreshRate;
-			printf ( "%3i) %ix%i %ibpp %iHz\n", i, w, h, bpp, hz );
-			available_modes.emplace_back(w, h);
 		}
 
 		printf ( "\n" );
@@ -197,7 +191,7 @@ Screen::Screen()
 Screen::Screen ( const Vector2i &size, const std::string &caption, bool resizable,
                  bool fullscreen, int colorBits, int alphaBits, int depthBits,
                  int stencilBits, int nSamples,
-                 unsigned int glMajor, unsigned int glMinor, bool vsync )
+                 unsigned int glMajor, unsigned int glMinor, bool vsync, bool autosize, float autosize_ratio )
 	: Widget ( nullptr ), mGLFWWindow ( nullptr ), mNVGContext ( nullptr ),
 	  mCursor ( Cursor::Arrow ), mBackground ( 0.3f, 0.3f, 0.32f, 1.f ), mCaption ( caption ),
 	  mShutdownGLFWOnDestruct ( false ), mFullscreen ( fullscreen ) {
@@ -224,13 +218,24 @@ Screen::Screen ( const Vector2i &size, const std::string &caption, bool resizabl
 		GLFWmonitor *monitor = glfwGetPrimaryMonitor();
 
 		const GLFWvidmode *mode = glfwGetVideoMode ( monitor );
-		printf("Entering fullscreen @ %d x %d px\n", size.x(), size.y());
+		printf("nanogui::Screen: Entering fullscreen @ %d x %d px\n", size.x(), size.y());
 
 		mGLFWWindow = glfwCreateWindow ( size.x(), size.y(),
 		                                 caption.c_str(), monitor, nullptr );
 	} else {
-		mGLFWWindow = glfwCreateWindow ( size.x(), size.y(),
-		                                 caption.c_str(), nullptr, nullptr );
+
+		if (autosize) {
+
+			std::vector<Eigen::Vector2i> modes = get_glfw_video_modes();
+			/* rescale if needed */
+			printf("nanogui::Screen:  Autosize: Resizing to %d x %d px\n", (int)(autosize_ratio * modes[0](0)), (int)(autosize_ratio * modes[0](1)));
+
+			mGLFWWindow = glfwCreateWindow ( (int)(autosize_ratio * modes[0](0)), (int)(autosize_ratio * modes[0](1)),
+			                                 caption.c_str(), nullptr, nullptr );
+
+		} else
+			mGLFWWindow = glfwCreateWindow ( size.x(), size.y(),
+			                                 caption.c_str(), nullptr, nullptr );
 	}
 
 	if ( !mGLFWWindow )
@@ -396,7 +401,6 @@ void Screen::initialize ( GLFWwindow *window, bool shutdownGLFWOnDestruct ) {
 	glfwGetFramebufferSize ( mGLFWWindow, &mFBSize[0], &mFBSize[1] );
 
 	mPixelRatio = get_pixel_ratio ( window );
-	mVideoModes = get_glfw_video_modes();
 
 #if defined(_WIN32) || defined(__linux__)
 
