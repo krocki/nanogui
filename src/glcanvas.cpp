@@ -31,10 +31,10 @@ void GLCanvas::drawWidgetBorder ( NVGcontext *ctx ) const {
 	nvgBeginPath ( ctx );
 	nvgStrokeWidth ( ctx, 1.0f );
 	nvgRoundedRect ( ctx, mPos.x() - 0.5f, mPos.y() - 0.5f,
-					 mSize.x() + 1, mSize.y() + 1, mTheme->mWindowCornerRadius );
+	                 mSize.x() + 1, mSize.y() + 1, mTheme->mWindowCornerRadius );
 	nvgStrokeColor ( ctx, mTheme->mBorderLight );
 	nvgRoundedRect ( ctx, mPos.x() - 1.0f, mPos.y() - 1.0f,
-					 mSize.x() + 2, mSize.y() + 2, mTheme->mWindowCornerRadius );
+	                 mSize.x() + 2, mSize.y() + 2, mTheme->mWindowCornerRadius );
 	nvgStrokeColor ( ctx, mTheme->mBorderDark );
 	nvgStroke ( ctx );
 }
@@ -42,33 +42,33 @@ void GLCanvas::drawWidgetBorder ( NVGcontext *ctx ) const {
 void GLCanvas::draw ( NVGcontext *ctx ) {
 	Widget::draw ( ctx );
 	nvgEndFrame ( ctx );
-	
+
 	if ( mDrawBorder )
 		drawWidgetBorder ( ctx );
-		
+
 	const Screen *screen = dynamic_cast<const Screen *> ( this->window()->parent() );
 	assert ( screen );
-	
+
 	float pixelRatio = screen->pixelRatio();
 	Vector2f screenSize = screen->size().cast<float>();
 	Vector2i positionInScreen = absolutePosition();
-	
+
 	Vector2i size = ( mSize.cast<float>() * pixelRatio ).cast<int>(),
-			 imagePosition = ( Vector2f ( positionInScreen[0],
-										  screenSize[1] - positionInScreen[1] -
-										  ( float ) mSize[1] ) * pixelRatio ).cast<int>();
-										  
+	         imagePosition = ( Vector2f ( positionInScreen[0],
+	                                      screenSize[1] - positionInScreen[1] -
+	                                      ( float ) mSize[1] ) * pixelRatio ).cast<int>();
+
 	GLint storedViewport[4];
 	glGetIntegerv ( GL_VIEWPORT, storedViewport );
-	
+
 	glViewport ( imagePosition[0], imagePosition[1], size[0] , size[1] );
-	
+
 	glEnable ( GL_SCISSOR_TEST );
 	glScissor ( imagePosition[0], imagePosition[1], size[0], size[1] );
-	
+
 	if ( !overlay ) {
 		glClearColor ( mBackgroundColor[0], mBackgroundColor[1],
-					   mBackgroundColor[2], mBackgroundColor[3] );
+		               mBackgroundColor[2], mBackgroundColor[3] );
 		glClear ( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT );
 	}
 	if ( overlay ) {
@@ -80,7 +80,7 @@ void GLCanvas::draw ( NVGcontext *ctx ) {
 		glDisable ( GL_BLEND );
 	glDisable ( GL_SCISSOR_TEST );
 	glViewport ( storedViewport[0], storedViewport[1],
-				 storedViewport[2], storedViewport[3] );
+	             storedViewport[2], storedViewport[3] );
 }
 
 void GLCanvas::save ( Serializer &s ) const {
