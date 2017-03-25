@@ -27,7 +27,7 @@ NAMESPACE_BEGIN ( nanogui )
 class NANOGUI_EXPORT Screen : public Widget {
 	friend class Widget;
 	friend class Window;
-  public:
+public:
 	/**
 	 * Create a new Screen instance
 	 *
@@ -81,7 +81,7 @@ class NANOGUI_EXPORT Screen : public Widget {
 	         bool resizable = true, bool fullscreen = false, int colorBits = 8,
 	         int alphaBits = 8, int depthBits = 24, int stencilBits = 8,
 	         int nSamples = 4,
-	         unsigned int glMajor = 3, unsigned int glMinor = 3, bool vsync = true, bool autosize = true, float autosize_ratio = 1.0f );
+	         unsigned int glMajor = 3, unsigned int glMinor = 3, bool vsync = true, bool autosize = false, float autosize_ratio = 1.0f );
 
 	/// Release all resources
 	virtual ~Screen();
@@ -154,7 +154,7 @@ class NANOGUI_EXPORT Screen : public Widget {
 		Widget::performLayout ( mNVGContext );
 	}
 
-  public:
+public:
 	/********* API for applications which manage GLFW themselves *********/
 
 	/**
@@ -190,7 +190,7 @@ class NANOGUI_EXPORT Screen : public Widget {
 	void moveWindowToFront ( Window *window );
 	void drawWidgets();
 
-  protected:
+protected:
 	GLFWwindow *mGLFWWindow;
 	NVGcontext *mNVGContext;
 	GLFWcursor *mCursors[ ( int ) Cursor::CursorCount];
@@ -209,7 +209,7 @@ class NANOGUI_EXPORT Screen : public Widget {
 	bool mShutdownGLFWOnDestruct;
 	bool mFullscreen;
 	std::function<void ( Vector2i )> mResizeCallback;
-  public:
+public:
 	EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 };
 
