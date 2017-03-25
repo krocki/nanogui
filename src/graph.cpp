@@ -264,14 +264,24 @@ void Graph::draw ( NVGcontext *ctx ) {
 	nvgFontFace ( ctx, "sans" );
 
 	if ( !mCaption.empty() ) {
-		nvgFontSize ( ctx, 12.0f );
+		nvgFontSize ( ctx, 9.0f );
 		nvgTextAlign ( ctx, NVG_ALIGN_LEFT | NVG_ALIGN_TOP );
 		nvgFillColor ( ctx, mTextColor );
 		nvgText ( ctx, mPos.x() + 3, mPos.y() + 2, mCaption.c_str(), NULL );
 	}
 
+	int last_avg = 10;
+	if (mValues.size() > last_avg) {
+
+		// set header
+		char str[256];
+		sprintf ( str, "%3.1f\n", mValues.tail ( last_avg ).mean());
+		setHeader ( str );
+
+	}
+
 	if ( !mHeader.empty() ) {
-		nvgFontSize ( ctx, 12.0f );
+		nvgFontSize ( ctx, 9.0f );
 		nvgTextAlign ( ctx, NVG_ALIGN_LEFT | NVG_ALIGN_TOP );
 		nvgFillColor ( ctx, mTextColor );
 		nvgText ( ctx, mPos.x() + 3, mPos.y() + 2, mHeader.c_str(), NULL );
@@ -286,7 +296,7 @@ void Graph::draw ( NVGcontext *ctx ) {
 	// }
 
 	if ( !mFooter.empty() ) {
-		nvgFontSize ( ctx, 12.0f );
+		nvgFontSize ( ctx, 9.0f );
 		nvgTextAlign ( ctx, NVG_ALIGN_RIGHT | NVG_ALIGN_TOP );
 		nvgFillColor ( ctx, mTextColor );
 		nvgText ( ctx, mPos.x() + mSize.x() - 3, mPos.y() + 2, mFooter.c_str(), NULL );
