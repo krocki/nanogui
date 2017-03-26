@@ -602,6 +602,9 @@ void Screen::drawWidgets() {
 	}
 
 	nvgEndFrame ( mNVGContext );
+
+	frame_completed_event();
+
 }
 
 bool Screen::keyboardEvent ( int key, int scancode, int action, int modifiers ) {

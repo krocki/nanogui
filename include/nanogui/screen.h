@@ -27,7 +27,7 @@ NAMESPACE_BEGIN ( nanogui )
 class NANOGUI_EXPORT Screen : public Widget {
 	friend class Widget;
 	friend class Window;
-public:
+  public:
 	/**
 	 * Create a new Screen instance
 	 *
@@ -131,6 +131,8 @@ public:
 	/// Window resize event handler
 	virtual bool resizeEvent ( const Vector2i &size );
 
+	virtual void frame_completed_event() {};
+
 	/// Set the resize callback
 	std::function<void ( Vector2i )> resizeCallback() const { return mResizeCallback; }
 	void setResizeCallback ( const std::function<void ( Vector2i )> &callback ) { mResizeCallback = callback; }
@@ -154,7 +156,7 @@ public:
 		Widget::performLayout ( mNVGContext );
 	}
 
-public:
+  public:
 	/********* API for applications which manage GLFW themselves *********/
 
 	/**
@@ -190,7 +192,7 @@ public:
 	void moveWindowToFront ( Window *window );
 	void drawWidgets();
 
-protected:
+  protected:
 	GLFWwindow *mGLFWWindow;
 	NVGcontext *mNVGContext;
 	GLFWcursor *mCursors[ ( int ) Cursor::CursorCount];
@@ -209,7 +211,7 @@ protected:
 	bool mShutdownGLFWOnDestruct;
 	bool mFullscreen;
 	std::function<void ( Vector2i )> mResizeCallback;
-public:
+  public:
 	EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 };
 
