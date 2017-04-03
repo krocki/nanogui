@@ -40,7 +40,7 @@ void GLCanvas::drawWidgetBorder ( NVGcontext *ctx ) const {
 }
 
 void GLCanvas::draw ( NVGcontext *ctx ) {
-	Widget::draw ( ctx );
+	//Widget::draw ( ctx );
 	nvgEndFrame ( ctx );
 
 	if ( mDrawBorder )
@@ -73,7 +73,7 @@ void GLCanvas::draw ( NVGcontext *ctx ) {
 	}
 	if ( overlay ) {
 		glEnable ( GL_BLEND );
-		glBlendFunc ( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+		glBlendFunc ( GL_ONE, GL_ONE );
 	}
 	this->drawGL();
 	if ( overlay )
@@ -81,6 +81,8 @@ void GLCanvas::draw ( NVGcontext *ctx ) {
 	glDisable ( GL_SCISSOR_TEST );
 	glViewport ( storedViewport[0], storedViewport[1],
 	             storedViewport[2], storedViewport[3] );
+	Widget::draw ( ctx );
+	// nvgEndFrame ( ctx );
 }
 
 void GLCanvas::save ( Serializer &s ) const {
