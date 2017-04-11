@@ -44,6 +44,9 @@ void Graph::draw ( NVGcontext *ctx ) {
 	nvgFillColor ( ctx, mBackgroundColor );
 	nvgFill ( ctx );
 
+	if (extValues)
+		mValues = *extValues;
+
 	if ( gtype == GraphType::GRAPH_NANOGUI || gtype == GraphType::GRAPH_NANOGUI_NOFILL ) {
 
 		if ( mValues.size() < 2 )
